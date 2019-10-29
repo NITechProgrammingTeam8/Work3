@@ -23,6 +23,13 @@ class AIDemonProcReadTest extends AIDemonProc {
             int h = ((Integer) height).intValue();
             return AIFrame.makeEnum( new Integer( (int) (0.9 * (h - 100))) );
         }
+        Object value = inFrame.readSlotValue( inFrameSystem, "value", false );
+        Object charges = inFrame.readSlotValue( inFrameSystem, "charges", false );
+        if ( value instanceof Integer && charges instanceof Integer) {
+            int v = ((Integer) value).intValue();
+            int c = ((Integer) charges).intValue();
+            return AIFrame.makeEnum( new Integer( (int) v + c) );
+        }
         return null;
     }
 
