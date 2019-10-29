@@ -1,0 +1,26 @@
+~/Programming2/Work3/frame
+●java FrameTest Monster-Hunter                                                                                                                                                                                                【 fix/frame 】
+クラスフレーム：game
+
+インスタンスフレーム：Monster-Hunter
+
+device,value,charges,tribute はデフォルト値
+スロット値一覧
+device:device
+value:0
+charges:0
+tribute:0
+
+tribute はデフォルト値
+スロット値一覧
+device:PS4
+value:9800
+charges:6000
+tribute:15800
+
+再びデフォルト値
+スロット値一覧
+device:device
+value:0
+charges:0
+tribute:15800
