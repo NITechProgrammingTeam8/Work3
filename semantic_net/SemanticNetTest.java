@@ -3,7 +3,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 
-class MakeSemanticNet {
+class SemanticNetTest {
     public static void main(String args[]){
         SemanticNet sn = new SemanticNet();
         if(args.length == 1) {
