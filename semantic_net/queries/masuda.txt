@@ -1,0 +1,4 @@
+?y play Chrono-Cross
+?y is-a student
+?y hobby soccer
+?y watch Attack-On-Titan

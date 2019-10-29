@@ -1,0 +1,13 @@
+soccer is-a sports
+Hiroki is-a NIT-student
+Hiroki speciality AI
+Chrono-Cross is-a game
+game has-a story
+Hiroki hobby soccer
+Hiroki play Chrono-Cross
+NIT-student is-a student
+student donot study
+Attack-On-Titan is-a animation
+Hiroki watch Attack-On-Titan
+Attack-On-Titan is-a world
+world is cruel
