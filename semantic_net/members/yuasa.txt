@@ -1,0 +1,14 @@
+Noriko is-a girl
+Noriko watch Demon-Slayer
+Noriko play Dragon-Quest-5
+Noriko read Monthly-Girls'-Nozaki-kun
+Demon-Slayer is-a animation
+Monthly-Girls'-Nozaki-kun is-a comic-book
+Noriko read GOSICK
+GOSICK is-a book
+Noriko hobby reading-book
+Demon-Slayer is-a fantasy
+Dragon-Quest-5 has-a many-fun
+fantasy is interesting
+GOSICK is-a mystery
+mystery is interesting

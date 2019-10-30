@@ -1,0 +1,40 @@
+~/Programming2/Work3/semantic_net
+●java SemanticNetTest yuasa                                                                                                                                                                                            【 fix/semantic_net 】
+*** Links ***
+Noriko  =is-a=>  girl
+Noriko  =watch=>  Demon-Slayer
+Noriko  =play=>  Dragon-Quest-5
+Noriko  =read=>  Monthly-Girls'-Nozaki-kun
+Demon-Slayer  =is-a=>  animation
+Monthly-Girls'-Nozaki-kun  =is-a=>  comic-book
+Noriko  =read=>  GOSICK
+GOSICK  =is-a=>  book
+Noriko  =hobby=>  reading-book
+Demon-Slayer  =is-a=>  fantasy
+Dragon-Quest-5  =has-a=>  many-fun
+fantasy  =is=>  interesting
+( Demon-Slayer  =is=>  interesting )
+GOSICK  =is-a=>  mystery
+mystery  =is=>  interesting
+( GOSICK  =is=>  interesting )
+*** Nodes ***
+Noriko
+girl
+Demon-Slayer
+Dragon-Quest-5
+Monthly-Girls'-Nozaki-kun
+animation
+comic-book
+GOSICK
+book
+reading-book
+fantasy
+many-fun
+interesting
+mystery
+*** Query ***
+?y  =read=>  GOSICK
+?y  =is-a=>  girl
+?y  =watch=>  Demon-Slayer
+?y  =hobby=>  reading-book
+[{?y=Noriko}]
