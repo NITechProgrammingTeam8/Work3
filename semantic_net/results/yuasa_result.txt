@@ -2,12 +2,12 @@
 ●java SemanticNetTest yuasa                                                                                                                                                                                            【 fix/semantic_net 】
 *** Links ***
 Noriko  =is-a=>  girl
-Noriko  =watch=>  Demon-Slayer
-Noriko  =play=>  Dragon-Quest-5
-Noriko  =read=>  Monthly-Girls'-Nozaki-kun
+Noriko  =watches=>  Demon-Slayer
+Noriko  =plays=>  Dragon-Quest-5
+Noriko  =reads=>  Monthly-Girls'-Nozaki-kun
 Demon-Slayer  =is-a=>  animation
 Monthly-Girls'-Nozaki-kun  =is-a=>  comic-book
-Noriko  =read=>  GOSICK
+Noriko  =reads=>  GOSICK
 GOSICK  =is-a=>  book
 Noriko  =hobby=>  reading-book
 Demon-Slayer  =is-a=>  fantasy
@@ -33,8 +33,8 @@ many-fun
 interesting
 mystery
 *** Query ***
-?y  =read=>  GOSICK
+?y  =reads=>  GOSICK
 ?y  =is-a=>  girl
-?y  =watch=>  Demon-Slayer
+?y  =watches=>  Demon-Slayer
 ?y  =hobby=>  reading-book
 [{?y=Noriko}]

@@ -3,10 +3,10 @@ Gotaku is-a NIT-student
 Gotaku joins WindOrchestra
 NyankoGreatWar is-a game
 game has-a story
-Gotaku play NyankoGreatWar
+Gotaku plays NyankoGreatWar
 NIT-student is-a student
-student study lots
+student studies lots
 Aladdin is-a animation
-Gotaku watch Aladdin
+Gotaku watches Aladdin
 Aladdin is-a Disney
 Disney is Fantasy

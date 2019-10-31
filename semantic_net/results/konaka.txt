@@ -1,0 +1,32 @@
+~/Programming2/Work3/semantic_net
+●java SemanticNetTest konaka                                                                                                                                                                                           【 fix/semantic_net 】
+*** Links ***
+tennis  =is-a=>  sports
+Yuuki  =hobby=>  tennis
+Yuuki  =watches=>  PSYCHO-PASS
+PSYCHO-PASS  =is-a=>  animation
+Yuuki  =is-a=>  NIT-student
+Yuuki  =speciality=>  AI
+APA  =is-a=>  tennis-circle
+Yuuki  =joins=>  APA
+Yuuki  =has-a=>  Surface-laptop
+Microsoft  =produces=>  Surface-laptop
+Yuuki  =wants=>  Mac-book-pro
+*** Nodes ***
+tennis
+sports
+Yuuki
+PSYCHO-PASS
+animation
+NIT-student
+AI
+APA
+tennis-circle
+Surface-laptop
+Microsoft
+Mac-book-pro
+*** Query ***
+?y  =wants=>  Mac-book-pro
+?y  =watches=>  PSYCHO-PASS
+?y  =joins=>  APA
+[{?y=Yuuki}]

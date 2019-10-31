@@ -8,14 +8,14 @@ Chrono-Cross  =is-a=>  game
 game  =has-a=>  story
 ( Chrono-Cross  =has-a=>  story )
 Hiroki  =hobby=>  soccer
-Hiroki  =play=>  Chrono-Cross
+Hiroki  =plays=>  Chrono-Cross
 NIT-student  =is-a=>  student
 ( Hiroki  =is-a=>  student )
 student  =donot=>  study
 ( NIT-student  =donot=>  study )
 ( Hiroki  =donot=>  study )
 Attack-On-Titan  =is-a=>  animation
-Hiroki  =watch=>  Attack-On-Titan
+Hiroki  =watches=>  Attack-On-Titan
 Attack-On-Titan  =is-a=>  world
 world  =is=>  cruel
 ( Attack-On-Titan  =is=>  cruel )
@@ -35,8 +35,8 @@ animation
 world
 cruel
 *** Query ***
-?y  =play=>  Chrono-Cross
+?y  =plays=>  Chrono-Cross
 ?y  =is-a=>  student
 ?y  =hobby=>  soccer
-?y  =watch=>  Attack-On-Titan
+?y  =watches=>  Attack-On-Titan
 [{?y=Hiroki}]

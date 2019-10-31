@@ -1,4 +1,4 @@
-?y read GOSICK
+?y reads GOSICK
 ?y is-a girl
-?y watch Demon-Slayer
+?y watches Demon-Slayer
 ?y hobby reading-book
