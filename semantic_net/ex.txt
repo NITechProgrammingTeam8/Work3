@@ -1,0 +1,8 @@
+baseball is-a sports
+Taro is-a NIT-student
+Ferrari is-a car
+car has-a engine
+Taro hobby baseball
+Taro own Ferrari
+NIT-student is-a student
+student donot study
