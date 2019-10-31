@@ -1,0 +1,26 @@
+~/Programming2/Work3/frame
+●java FrameTest Hearts-Of-Iron-4                                                                                                                                                                                              【 fix/frame 】
+クラスフレーム：game
+
+インスタンスフレーム：Hearts-Of-Iron-4
+
+device,value,charges,tribute はデフォルト値
+スロット値一覧
+device:device
+value:0
+charges:0
+tribute:0
+
+tribute はデフォルト値
+スロット値一覧
+device:PC
+value:3980
+charges:1000
+tribute:4980
+
+再びデフォルト値
+スロット値一覧
+device:device
+value:0
+charges:0
+tribute:4980
