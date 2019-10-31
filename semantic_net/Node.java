@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.ArrayList;
 
 class Node {
     String name;
@@ -36,7 +36,7 @@ class Node {
     public void addArriveAtMeLinks(Link theLink){
 	arriveAtMeLinks.add(theLink);
     }
-    
+
     public ArrayList<Link> getArriveAtMeLinks(){
 	return arriveAtMeLinks;
     }
