@@ -1,0 +1,42 @@
+~/Programming2/Work3/semantic_net
+●java SemanticNetTest masuda                                                                                                                                                                                           【 fix/semantic_net 】
+*** Links ***
+soccer  =is-a=>  sports
+Hiroki  =is-a=>  NIT-student
+Hiroki  =speciality=>  AI
+Chrono-Cross  =is-a=>  game
+game  =has-a=>  story
+( Chrono-Cross  =has-a=>  story )
+Hiroki  =hobby=>  soccer
+Hiroki  =plays=>  Chrono-Cross
+NIT-student  =is-a=>  student
+( Hiroki  =is-a=>  student )
+student  =donot=>  study
+( NIT-student  =donot=>  study )
+( Hiroki  =donot=>  study )
+Attack-On-Titan  =is-a=>  animation
+Hiroki  =watches=>  Attack-On-Titan
+Attack-On-Titan  =is-a=>  world
+world  =is=>  cruel
+( Attack-On-Titan  =is=>  cruel )
+*** Nodes ***
+soccer
+sports
+Hiroki
+NIT-student
+AI
+Chrono-Cross
+game
+story
+student
+study
+Attack-On-Titan
+animation
+world
+cruel
+*** Query ***
+?y  =plays=>  Chrono-Cross
+?y  =is-a=>  student
+?y  =hobby=>  soccer
+?y  =watches=>  Attack-On-Titan
+[{?y=Hiroki}]

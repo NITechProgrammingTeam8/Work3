@@ -1,0 +1,3 @@
+?y plays NyankoGreatWar
+?y is-a student
+?y watches Aladdin

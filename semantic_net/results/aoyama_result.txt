@@ -1,0 +1,42 @@
+~/Programming2/Work3/semantic_net
+●java SemanticNetTest aoyama                                                                                                                                                                                           【 fix/semantic_net 】
+*** Links ***
+Shuhei  =plays=>  OverWatch
+OverWatch  =is-a=>  game
+game  =is-a=>  fun
+( OverWatch  =is-a=>  fun )
+Shuhei  =watches=>  Hyouka
+Hyouka  =is-a=>  animation
+Hyouka  =is-a=>  mystery
+Shuhei  =plays=>  base
+base  =is-a=>  instrument
+Shuhei  =reads=>  Takagi-san
+Takagi-san  =is-a=>  comic-book
+comic-book  =has-a=>  picture
+( Takagi-san  =has-a=>  picture )
+Shuhei  =has-a=>  iPad
+iPad  =is-a=>  useful
+Shuhei  =watches=>  MizutamariBond
+MizutamariBond  =makes=>  video
+*** Nodes ***
+Shuhei
+OverWatch
+game
+fun
+Hyouka
+animation
+mystery
+base
+instrument
+Takagi-san
+comic-book
+picture
+iPad
+useful
+MizutamariBond
+video
+*** Query ***
+?y  =plays=>  OverWatch
+?y  =watches=>  Hyouka
+?y  =has-a=>  iPad
+[{?y=Shuhei}]

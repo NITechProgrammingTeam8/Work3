@@ -1,0 +1,40 @@
+~/Programming2/Work3/semantic_net
+●java SemanticNetTest goto                                                                                                                                                                                             【 fix/semantic_net 】
+*** Links ***
+Saxphone  =is-a=>  Instrument
+Gotaku  =is-a=>  NIT-student
+Gotaku  =joins=>  WindOrchestra
+NyankoGreatWar  =is-a=>  game
+game  =has-a=>  story
+( NyankoGreatWar  =has-a=>  story )
+Gotaku  =plays=>  NyankoGreatWar
+NIT-student  =is-a=>  student
+( Gotaku  =is-a=>  student )
+student  =studies=>  lots
+( NIT-student  =studies=>  lots )
+( Gotaku  =studies=>  lots )
+Aladdin  =is-a=>  animation
+Gotaku  =watches=>  Aladdin
+Aladdin  =is-a=>  Disney
+Disney  =is=>  Fantasy
+( Aladdin  =is=>  Fantasy )
+*** Nodes ***
+Saxphone
+Instrument
+Gotaku
+NIT-student
+WindOrchestra
+NyankoGreatWar
+game
+story
+student
+lots
+Aladdin
+animation
+Disney
+Fantasy
+*** Query ***
+?y  =plays=>  NyankoGreatWar
+?y  =is-a=>  student
+?y  =watches=>  Aladdin
+[{?y=Gotaku}]

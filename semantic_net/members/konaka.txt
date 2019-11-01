@@ -1,0 +1,11 @@
+tennis is-a sports
+Yuuki hobby tennis
+Yuuki watches PSYCHO-PASS
+PSYCHO-PASS is-a animation
+Yuuki is-a NIT-student
+Yuuki speciality AI
+APA is-a tennis-circle
+Yuuki joins APA
+Yuuki has-a Surface-laptop
+Microsoft produces Surface-laptop
+Yuuki wants Mac-book-pro
