@@ -1,0 +1,26 @@
+~/Programming2/Work3/frame
+●java FrameTest Pawapuro-Kun                                                                                                                                                                                                  【 fix/frame 】
+クラスフレーム：game
+
+インスタンスフレーム：Pawapuro-Kun
+
+device,value,charges,tribute はデフォルト値
+スロット値一覧
+device:device
+value:0
+charges:0
+tribute:0
+
+tribute はデフォルト値
+スロット値一覧
+device:3DS
+value:9400
+charges:500
+tribute:9900
+
+再びデフォルト値
+スロット値一覧
+device:device
+value:0
+charges:0
+tribute:9900
