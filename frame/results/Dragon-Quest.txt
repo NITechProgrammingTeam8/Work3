@@ -1,0 +1,26 @@
+~/Programming2/Work3/frame
+●java FrameTest Dragon-Quest                                                                                                                                                                                                  【 fix/frame 】
+クラスフレーム：game
+
+インスタンスフレーム：Dragon-Quest
+
+device,value,charges,tribute はデフォルト値
+スロット値一覧
+device:device
+value:0
+charges:0
+tribute:0
+
+tribute はデフォルト値
+スロット値一覧
+device:DS
+value:4800
+charges:0
+tribute:4800
+
+再びデフォルト値
+スロット値一覧
+device:device
+value:0
+charges:0
+tribute:4800

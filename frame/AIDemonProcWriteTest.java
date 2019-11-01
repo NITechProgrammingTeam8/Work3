@@ -1,6 +1,5 @@
 /*
  AIDemonProcWriteTest.java
-  すべての種類のデモン手続きのスーパークラス
 */
 
 import java.util.*;

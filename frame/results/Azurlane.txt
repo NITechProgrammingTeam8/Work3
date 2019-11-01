@@ -1,0 +1,26 @@
+~/Programming2/Work3/frame
+●java FrameTest Azurlane                                                                                                                                                                                                      【 fix/frame 】
+クラスフレーム：game
+
+インスタンスフレーム：Azurlane
+
+device,value,charges,tribute はデフォルト値
+スロット値一覧
+device:device
+value:0
+charges:0
+tribute:0
+
+tribute はデフォルト値
+スロット値一覧
+device:iPhone
+value:0
+charges:6720
+tribute:6720
+
+再びデフォルト値
+スロット値一覧
+device:device
+value:0
+charges:0
+tribute:6720
