@@ -1,0 +1,167 @@
+\documentclass[uplatex,12pt]{jsarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{url}
+\usepackage{listings,jlisting}
+\usepackage{ascmac}
+\usepackage{amsmath,amssymb}
+
+%ここからソースコードの表示に関する設定
+\lstset{
+%  basicstyle={\ttfamily},
+  basicstyle={\small},
+  identifierstyle={\small},
+%  commentstyle={\smallitshape},
+%  commentstyle={\small\itshape},
+  commentstyle={\small\ttfamily},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
+%ここまでソースコードの表示に関する設定
+
+\title{知能プログラミング演習II 課題2}
+\author{グループ8\\
+  29114060 後藤 拓也\\
+}
+\date{2019年10月28日}
+
+\begin{document}
+\maketitle
+
+\paragraph{提出物} rep3
+
+\paragraph{グループ} グループ8
+
+\paragraph{グループメンバー}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+  \hline
+  学生番号&氏名&貢献度比率\\
+  \hline\hline
+  29114003&青山周平&no\\
+  \hline
+  29114060&後藤拓也&no\\
+  \hline
+  29114116&増田大輝&no\\
+  \hline
+  29114142&湯浅範子&no\\
+  \hline
+  29119016&小中祐希&no\\
+  \hline
+\end{tabular}
+\end{center}
+\paragraph{自分の役割} 必須課題3.3
+\\　「知識システムの質問応答システム」
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{課題の説明}
+\begin{screen}
+課題3-1または3-2で作った知識表現を用いた質問応答システムを作成せよ．
+なお，ユーザの質問は英語や日本語のような自然言語が望ましいが，難しければ課題2で扱ったような変数を含むパターン (クエリー) でも構わない．
+\end{screen}
+
+\section{手法}
+
+\begin{enumerate}
+\item 課題2で扱ったおうな変数を含むクエリーによる質問
+\item 英語による質問
+\end{enumerate}
+
+
+1.に関して, 
+
+2.に関しては,
+
+
+\section{実装}
+
+手法1に関する「課題2で扱ったおうな変数を含むクエリーによる質問」の部分を実装したソースコード\ref{src:No1}に示す。
+\begin{lstlisting}[caption=1文すべて終わったら格納する,label=src:No1]
+/***
+ * 課題2で扱ったような変数を含むパターン (クエリー)による質問応答システム
+ * "?x is-a sports"と"?y hobby ?x"をとらえる
+ * → 質問は3つのトークンに分けられる
+ */
+Scanner stdIn1 = new Scanner(System.in);	//文字列読み込み
+Scanner stdIn2 = new Scanner(System.in);	//数値読み込み
+ArrayList<ArrayList<String>> queryList = new ArrayList<ArrayList<String>>(); //質問(query)を入れる
+StringTokenizer st;		//トークンごとに分解
+int retry;
+do {
+	ArrayList<String> tokenList = new ArrayList<>();
+	System.out.println("質問を入力してください");
+	String s = stdIn1.nextLine(); 	//質問文がここに入り,
+	st = new StringTokenizer(s);	//トークンごとに分解し,
+	for(int i=0; i<st.countTokens(); i++) {
+		tokenList.add(st.nextToken());
+	}
+	tokenList.add(st.nextToken());
+	queryList.add(tokenList);
+	System.out.println("もう１つ? 1...Yes/ 0...No");
+	retry = stdIn2.nextInt();
+}while(retry == 1);
+
+ArrayList<Link> query = new ArrayList<Link>();
+for(int i=0; i<queryList.size(); i++) {
+	query.add(new Link(queryList.get(i).get(1), queryList.get(i).get(0), queryList.get(i).get(2)));
+}
+sn.query(query);
+\end{lstlisting}
+
+flagはフィールド変数として, Unifierクラスのどのメソッドでも用いられる. 上記には書かれていないが, tokenMatchingメソッドのvarMatchingメソッド内で1単語(トークン)をマッチングさせるたびに, マッチング成功の成否に合わせflag管理をしている.
+
+また, ハッシュマップは実際には2次元リストにより構築されているため, 1文解析がすべて終わり, フラグが立ってない場合の処理だが, 手法5の説明時には簡略化のために省略したが, 実際には"ハッシュマップに格納する"のではなく, "ハッシュマップに格納するためのリストvarslistに登録する"である.\\\\
+
+
+\section{実行例}
+日本語で言うと, [スポーツを趣味にしている人はだれか？]と質問したときの実行結果が以下のようになる.
+\begin{lstlisting}
+Successfully started
+検索結果を取得
+質問を入力してください
+?x is-a sports
+もう１つ? 1...Yes/ 0...No
+1
+質問を入力してください
+?y hobby ?x
+もう１つ? 1...Yes/ 0...No
+0
+*** Query ***
+?x  =is-a=>  sports
+?y  =hobby=>  ?x
+[{?x=baseball, ?y=Taro}]
+\end{lstlisting}
+
+まずはスポーツが何かを求め, その後, それを趣味としている人を探す.
+
+正しい関係性が出力されていることが確認される.\\
+
+\section{考察}
+手法1のやり方では, 1つの質問しかできない. というのも, 2つ入力しているが, これは"かつ"の関係で結ばれている1つの質問文なのである.
+
+違和感を覚えたのは, 「Taro hobby baseball」という例文. 何となく「太郎の趣味は野球です」になるが, Google翻訳にかけたら, 「ヒロキホビーサッカー」である. そもそもhobbyは動詞になり得ない. 正しくは, 「Taro ’s hobby is baseball」である. この1文を扱うのは相当難しい. ただ, 「Taro hobby baseball」が単純に, 「Tail, Label, Head」を表していると考えれば, 何とかなるかもしれない.
+
+\section{感想}
+Javaの使い方は, ググってもいいが, 昔しっかり使い込んだ教科書に立ち戻るのも, また一挙である.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 参考文献
+\begin{thebibliography}{99}
+\bibitem{notty} Javaによる知能プログラミング入門 --著：新谷 虎松 \\
+\bibitem{notty} 新・明解 Java 入門 --著：柴田望洋 \\
+\bibitem{notty} Java 指定型の読み取り --著：Let's プログラミング \\
+\url{https://www.javadrive.jp/start/scanner/index2.html}
+\bibitem{notty} Google翻訳 --著：Google \\
+\url{https://translate.google.com/?hl=ja}
+\end{thebibliography}
+
+\end{document}
