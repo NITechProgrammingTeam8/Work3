@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
 // GUIとの接合部
 /* クラスフレームを定義する(これは規定にするか否か。GUIで定義はしない、せめてファイル読み込み)
  * テキストファイルからデータ取得
@@ -34,30 +33,19 @@ class AccessData {
 	// フレームシステムの初期化
 	private AIFrameSystem fs;
 	String frameName = "game";
-
 	// コンストラクタ
 	public AccessData(AIFrameSystem fs) {
         this.fs = fs;
     }
-
     // GUI起動時にクラスフレームを定義(規定値)
     public void start() {
     	defineClassFrame(fs, frameName);
     }
-
     // インスタンスフレームを引数から生成
     public void makeInstance(String instanceName) {
         fs.createInstanceFrame( frameName, instanceName );
     }
-
-    /*
-    // テキストファイルからデータを読み込む
-    public  List<String> readData(String filename) {
-    	List<String> statementList = readTextFile(filename);
-        return statementList;
-    }
-    */
-
+	
     private static void defineClassFrame(AIFrameSystem fs, String frameName) {
         // クラスフレーム game の生成
         fs.createClassFrame( frameName );
@@ -76,7 +64,6 @@ class AccessData {
     public String getFrameName() {
     	return frameName;
     }
-
     // スロット名をリストで取得
     public List<String> getSrotListName() {
     	List<String> srotlist = new ArrayList();
@@ -86,27 +73,22 @@ class AccessData {
     	srotlist.add("tribute");
     	return srotlist;
     }
-
     // クラスフレームの規定値を取得
     public List<String> getFrame(String frameName) {
-    	List<String> frame = getSlots(fs, frameName, false);
-    	return frame;
+    	return  getSlots(fs, frameName, false);
     }
-
-    /*
-    // インスタンスフレームの格納値を取得
-    public List<String> getInstanceFrame(String instanceName) {
-    	List<String> instance = getSlots(fs, instanceName, false);
-    	return instance;
+	// 単体取得
+    public String getFrameUnit(String frameName, String slotname) {
+    	return  getSlot(fs, frameName, slotname, false);
     }
-    */
-
     // 再びデフォルト値を取得、に対応
     public List<String> getDefaltInstanceFrame(String instanceName) {
-    	List<String> defaltinstance = getSlots(fs, instanceName, true);
-    	return defaltinstance;
+    	return getSlots(fs, instanceName, true);
     }
-
+	// 単体デフォルト取得
+    public String getDefaltInstanceFrameUnit(String instanceName, String slotname) {
+    	return getSlot(fs, instanceName, slotname, true);
+    }
     // スロット名の受け取り方法検討中
     // フレームのスロット値取得
     public List<String> getSlots(AIFrameSystem fs, String instanceName, boolean isDefault) {
@@ -119,6 +101,10 @@ class AccessData {
     	slots.add( Objects.toString(fs.readSlotValue( instanceName, "charges", isDefault )) );
     	slots.add( Objects.toString(fs.readSlotValue( instanceName, "tribute", isDefault )) );
     	return slots;
+    }
+    // フレームスロット値個別取得
+    public String getSlot(AIFrameSystem fs, String instanceName, String slotname, boolean isDefault) {
+    	return Objects.toString(fs.readSlotValue( instanceName, slotname, isDefault ));
     }
 
     // スロットリスト受け取り方検討中
@@ -156,108 +142,8 @@ class AccessData {
     	}
     }
 
-    /*
-    // 受け取った一行を空白で分割
-    private static List<String> splitStatement(String statement) {
-        return Arrays.asList(statement.split(" "));
+    // インスタンスフレームの削除
+    public void deleteInstanceFrame(List<String> instanceList,String instancename) {
+    	instanceList.remove(instanceList.indexOf(instancename));
     }
-
-    // 受け取った一行をカンマで分割
-    private static List<String> splitStatementC(String statementc) {
-        return Arrays.asList(statementc.split(",", 0));
-    }
-    */
-
-    /*
-    // GUI終了時になにかしたいことがあれば…
-    public void finish() {
-
-    }
-
-    // 新規データの追加を指示する
-    public void addData(String newData) {
-        try {
-            dao.addData(newData);
-            view.successAddData();
-        } catch(SQLException e) {
-            view.showError(e.toString());
-        } catch(ClassNotFoundException e) {
-            view.showError(e.toString());
-        } catch (Exception e) {
-			view.showError(e.toString());
-		} finally {
-            try {
-				dao.conn.close();
-			} catch (SQLException e) {
-				view.showError(e.toString());
-			}
-        }
-    }
-    */
-
-    /*
-    // 検索を行い結果を渡すように指示する
-    // 返すのはノード(ArrayList)？
-    public ArrayList searchData(String targetData) { // 複数の質問文は,区切りで与える
-
-    	// 検索文の分割
-    	List<String> querysplitList = splitStatementC(targetData);
-    	ArrayList<Link> query = new ArrayList<Link>();
-
-    	for(String splitLists: querysplitList) {
-            List<String> splitList = splitStatement(splitLists);
-            addQuery(query, splitList);
-        }
-    	// 何を返してる？
-    	return sn.getQuery(query);
-    }
-	*/
-
-    /*
-    // ノード(又はその関係性)を削除するように指示する
-    public void deleteData(int targetData) {
-        try {
-            dao.deleteData(targetData);
-            view.successDeleteData();
-        } catch(SQLException e) {
-            view.showError(e.toString());
-        } catch(ClassNotFoundException e) {
-            view.showError(e.toString());
-        } catch (Exception e) {
-        	view.showError(e.toString());
-		} finally {
-            try {
-				dao.conn.close();
-			} catch (SQLException e) {
-				view.showError(e.toString());
-			}
-        }
-    }
-
-    // 既存データの受け取り(必要か要検討)
-    public void fetchData() {
-        List<TextModel> resultList;
-    	//List<String> resultList; // 【DBからlineしか取得しない場合】
-        try {
-            resultList = dao.FetchData();
-            if(resultList.size() == 0) {
-                view.showNoData();
-            } else {
-                view.showResultList(resultList);
-            }
-        } catch(SQLException e) {
-            view.showError(e.toString());
-        } catch(ClassNotFoundException e) {
-            view.showError(e.toString());
-        } catch (Exception e) {
-        	view.showError(e.toString());
-		} finally {
-            try {
-				dao.conn.close();
-			} catch (SQLException e) {
-				view.showError(e.toString());
-			}
-        }
-    }
-    */
 }
