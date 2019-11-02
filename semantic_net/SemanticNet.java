@@ -1,4 +1,7 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 
 /***
  * 意味ネットワーク (Semantic Net)
@@ -8,19 +11,25 @@ public class SemanticNet {
     ArrayList<Link> links;
     ArrayList<Node> nodes;
     HashMap<String,Node> nodesNameTable;
-    
+
     SemanticNet(){
-	links = new ArrayList<Link>();
-	nodes = new ArrayList<Node>();
-	nodesNameTable = new HashMap<String,Node>();
+    	links = new ArrayList<Link>();
+    	nodes = new ArrayList<Node>();
+    	nodesNameTable = new HashMap<String,Node>();
     }
 
     public void query(ArrayList<Link> theQueries){
-	System.out.println("*** Query ***");
-	for(int i = 0 ; i < theQueries.size() ; i++){
-	    System.out.println(((Link)theQueries.get(i)).toString());
-	}
-	System.out.println((doQuery(theQueries)).toString());
+    	System.out.println("*** Query ***");
+    	for(int i = 0 ; i < theQueries.size() ; i++){
+    		System.out.println(((Link)theQueries.get(i)).toString());
+    	}
+    	// 解が無いとき[]
+    	// 解があるとき[{?変数 = 解,・・・}]
+    	System.out.println((doQuery(theQueries)).toString());
+    }
+
+    public ArrayList getQuery(ArrayList<Link> theQueries) {
+    	return doQuery(theQueries);
     }
 
     public ArrayList doQuery(ArrayList theQueries){
@@ -45,9 +54,8 @@ public class SemanticNet {
 	    HashMap<String,String> binding = new HashMap<String,String>();
 	    String theQueryString = theQuery.getFullName();
 	    String theLinkString  = theLink.getFullName();
-	    if((new Matcher()).
-	       matching(theQueryString,theLinkString,binding)){
-		bindings.add(binding);
+	    if((new Matcher()).matching(theQueryString,theLinkString,binding)){
+	    	bindings.add(binding);
 	    }
 	}
 	return bindings;
@@ -76,19 +84,18 @@ public class SemanticNet {
     }
 
     public ArrayList joinBindings(ArrayList theBindings1,ArrayList theBindings2){
-	ArrayList resultBindings = new ArrayList();
-	for(int i = 0 ; i < theBindings1.size() ; i++){
-	    HashMap<String,String> theBinding1 = (HashMap)theBindings1.get(i);
-	    for(int j = 0 ; j < theBindings2.size() ; j++){
-		HashMap<String,String> theBinding2 = (HashMap)theBindings2.get(j);
-		HashMap<String,String> resultBinding =
-		    joinBinding(theBinding1,theBinding2);
-		if(resultBinding.size()!=0){
-		    resultBindings.add(resultBinding);
-		}
-	    }
-	}
-	return resultBindings;
+    	ArrayList resultBindings = new ArrayList();
+    	for(int i = 0 ; i < theBindings1.size() ; i++){
+    		HashMap<String,String> theBinding1 = (HashMap)theBindings1.get(i);
+    		for(int j = 0 ; j < theBindings2.size() ; j++){
+    			HashMap<String,String> theBinding2 = (HashMap)theBindings2.get(j);
+    			HashMap<String,String> resultBinding = joinBinding(theBinding1,theBinding2);
+    			if(resultBinding.size()!=0){
+    				resultBindings.add(resultBinding);
+    			}
+    		}
+    	}
+    return resultBindings;
     }
 
     public HashMap<String,String> joinBinding(HashMap<String,String> theBinding1, HashMap<String,String> theBinding2){
@@ -140,7 +147,7 @@ public class SemanticNet {
 	tmp.add(theLink);
 	recursiveInheritance(tmp,tail.getISATails());
 
-	
+
 	// 関係を head と tail に登録．
 	head.addArriveAtMeLinks(theLink);
 	tail.addDepartFromMeLinks(theLink);
@@ -176,18 +183,22 @@ public class SemanticNet {
 
 
     public ArrayList<Node> getNodes(){
-	return nodes;
+    	return nodes;
     }
-    
+
     public HashMap<String,Node> getNodesNameTable(){
-	return nodesNameTable;
+    	return nodesNameTable;
     }
 
     public void printLinks(){
-	System.out.println("*** Links ***");
-	for(int i = 0 ; i < links.size() ; i++){
-	    System.out.println(((Link)links.get(i)).toString());
-	}
+    	System.out.println("*** Links ***");
+    	for(int i = 0 ; i < links.size() ; i++){
+    		System.out.println(((Link)links.get(i)).toString());
+    	}
+    }
+
+    public ArrayList<Link> getLinks() {
+    	return links;
     }
 
     public void printNodes(){
@@ -196,6 +207,7 @@ public class SemanticNet {
 	    System.out.println(((Node)nodes.get(i)).toString());
 	}
     }
+
 }
 
 
@@ -203,7 +215,7 @@ class Matcher {
     StringTokenizer st1;
     StringTokenizer st2;
     HashMap<String,String> vars;
-    
+
     Matcher(){
 	vars = new HashMap<String,String>();
     }
@@ -216,21 +228,21 @@ class Matcher {
 	    return false;
 	}
     }
-    
+
     public boolean matching(String string1,String string2){
 	//System.out.println(string1);
 	//System.out.println(string2);
-	
+
 	// 同じなら成功
 	if(string1.equals(string2)) return true;
-	
+
 	// 各々トークンに分ける
 	st1 = new StringTokenizer(string1);
 	st2 = new StringTokenizer(string2);
 
 	// 数が異なったら失敗
 	if(st1.countTokens() != st2.countTokens()) return false;
-		
+
 	// 定数同士
 	for(int i = 0 ; i < st1.countTokens();){
 	    if(!tokenMatching(st1.nextToken(),st2.nextToken())){
@@ -238,7 +250,7 @@ class Matcher {
 		return false;
 	    }
 	}
-	
+
 	// 最後まで O.K. なら成功
 	return true;
     }
