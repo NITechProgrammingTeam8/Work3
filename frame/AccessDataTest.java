@@ -8,30 +8,37 @@ class AccessDataTest {
     		System.exit(1);
     	}
     	AccessData ad = new AccessData(new AIFrameSystem());
-    	ad.start();
+        ad.start();
+        
     	String frameName = ad.getFrameName();
     	System.out.println( "クラスフレーム：" + frameName );
         System.out.println();
+
         // インスタンスフレーム名の取得方法(現在は引数でファイル名指定)
         List<String> instanceName = new ArrayList<String>();
         for (int i = 0; i < args.length; i++) {
         	instanceName.add(args[i]);
         }
+
         // スロット名をリストで取得
-    	List<String> slotlistname = ad.getSrotListName();
+        List<String> slotlistname = ad.getSrotListName();
+        
         // クラスフレームのデフォルト値を取得
     	List<String> classframe = ad.getFrame(frameName);
     	System.out.println( "クラスフレームのデフォルト値" );
     	outputSlots(slotlistname, classframe);
-    	System.out.println();
+        System.out.println();
+        
         for (int i = 0; i < instanceName.size(); i++) {
         	System.out.println("インスタンスフレーム" + (i+1) + "："+instanceName.get(i));
-        	System.out.println();
+            System.out.println();
+            
         	ad.makeInstance(instanceName.get(i));
         	List<String> defalt = ad.getFrame(instanceName.get(i));
         	System.out.println( "device,value,charges,tribute はデフォルト値" );
         	outputSlots(slotlistname, defalt);
-        	System.out.println();
+            System.out.println();
+            
         	// インスタンスフレームの値をテキストファイルから取得
         	List<String> slotList = ad.readTextFile("games/"+instanceName.get(i)+".txt");
         	// インスタンスフレームの値を格納
@@ -40,7 +47,8 @@ class AccessDataTest {
         	List<String> instance = ad.getFrame(instanceName.get(i));
         	System.out.println( "テキストファイルから取得した値" );
         	outputSlots(slotlistname, instance);
-        	System.out.println();
+            System.out.println();
+            
         	// 再びデフォルト値を取得
         	List<String> defaltinstance = ad.getDefaltInstanceFrame(instanceName.get(i));
         	System.out.println( "再びデフォルト値" );
