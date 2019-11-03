@@ -13,7 +13,7 @@ public class RelationGUI extends JFrame implements ActionListener {
     RelationGUI(String title) {
 
         setTitle(title);
-        int appWidth = 1200;
+        int appWidth = 1500;
         int appHeight = 700;
         setBounds(100, 100, appWidth, appHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,10 +35,12 @@ public class RelationGUI extends JFrame implements ActionListener {
 }
 
 class RelationMap extends JPanel {
+    private int width;
+    private int height;
     private SemanticNet sn;
     private AccessData ad;
-    private Map<Node, NodePanel> nodes;  // NodeからNodePanelへのポインタは無いためこれで代用
-    private Map<Link, LinkPanel> links;  // LinkからLinkPanelも同様
+    private Map<Node, NodePanel> nodes; // NodeからNodePanelへのポインタは無いためこれで代用
+    private Map<Link, LinkPanel> links; // LinkからLinkPanelも同様
     private NodePanel dragPanel;
 
     RelationMap() {
@@ -49,14 +51,14 @@ class RelationMap extends JPanel {
         setLayout(null);
         nodes = new HashMap<>();
         ArrayList<Node> nodeList = ad.getNodes();
-        int xloc = 0;
-        int yloc = 0;
+        int xloc = 100;
+        int yloc = 100;
         for (Node n : nodeList) {
             NodePanel np = new NodePanel(n);
             np.setBounds(xloc, yloc, 180, 30);
-            xloc += 100;
-            yloc += 50;
-            
+            xloc += 50;
+            yloc += 20;
+
             add(np);
             nodes.put(n, np);
         }
@@ -68,7 +70,7 @@ class RelationMap extends JPanel {
             LinkPanel lp = new LinkPanel(l, tail, head);
             tail.addDepartFromMeLinks(lp);
             head.addArriveAtMeLinks(lp);
-            
+
             add(lp);
             links.put(l, lp);
         }
@@ -88,7 +90,7 @@ class NodePanel extends JPanel {
         this.node = node;
         departFromMeLinks = new ArrayList<>();
         arriveAtMeLinks = new ArrayList<>();
-        
+
         setBackground(Color.ORANGE);
         setBorder(new BevelBorder(BevelBorder.RAISED));
 
@@ -108,12 +110,12 @@ class NodePanel extends JPanel {
                 // System.out.println(e.getX() +", " + draggedAtX + "," + getLocation().x);
                 setLocation(e.getX() - draggedAtX + getLocation().x, e.getY() - draggedAtY + getLocation().y);
 
-                for(LinkPanel lp : departFromMeLinks) {
-                    lp.resize();
+                for (LinkPanel lp : departFromMeLinks) {
+                    lp.update();
                     lp.repaint();
                 }
-                for(LinkPanel lp : arriveAtMeLinks) {
-                    lp.resize();
+                for (LinkPanel lp : arriveAtMeLinks) {
+                    lp.update();
                     lp.repaint();
                 }
             }
@@ -153,13 +155,14 @@ class LinkPanel extends JPanel {
     private NodePanel head;
     private Point start;
     private Point end;
-    private int margin; // パネルの幅の猶予(描写の端が切れないようにするため)
+    private int margin; // パネルの幅の猶予(パネルが端折れないようにするため)
+    private JPanel mainPanel;
 
     LinkPanel(Link link, NodePanel tail, NodePanel head) { // tail =label=> head
         this.link = link;
         this.tail = tail;
         this.head = head;
-        margin = 50; // 50
+        margin = 100;
 
         // setBackground(Color.BLACK);
         setOpaque(false); // パネルの透過
@@ -169,28 +172,22 @@ class LinkPanel extends JPanel {
 
         setSize();
 
-        SpringLayout layout = new SpringLayout();
-        setLayout(layout);
-        setBackground(Color.BLUE);
+        setLayout(null);
 
-        // JPanel p = new JPanel(new GridLayout(2, 1));
-        // p.setAlignmentY(Component.CENTER_ALIGNMENT);
-        // p.setBackground(new Color(0, 128, 128));
-        // p.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        // JLabel label = new JLabel(par.getId() + " to " + child.getId());
-        // model = new SpinnerNumberModel(par.getNode().getCost(child.getNode()), 0,
-        // 9999, 1);
-        // JSpinner spinner = new JSpinner(model);
-        // spinner.setPreferredSize(new Dimension(40, 25)); // marginは各座標の２倍以上にすること
+        mainPanel = new JPanel();
+        mainPanel.setBackground(new Color(0, 128, 128));
+        mainPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        JLabel label = new JLabel(tail.getId() + " = " + link.getLabel() + " => " + head.getId());
 
-        // p.add(label);
-        // p.add(spinner);
+        mainPanel.add(label);
 
-        // layout.putConstraint(SpringLayout.WEST, p, (getRight() - getLeft()) / 2 - 20,
-        // SpringLayout.WEST, this);
-        // layout.putConstraint(SpringLayout.NORTH, p, (getBtm() - getTop()) / 2 - 20,
-        // SpringLayout.NORTH, this);
-        // add(p);
+        int mainWidth = 120;
+        int mainHeight = 30;
+        int fitX = -(mainWidth / 2);
+        int fitY = -(mainHeight / 4);
+        mainPanel.setBounds((getRight() - getLeft()) / 2 + fitX, (getBtm() - getTop()) / 2 + fitY, mainWidth,
+                mainHeight);
+        add(mainPanel);
     }
 
     void setShortestDistance(Rectangle source, Rectangle distance) {
@@ -310,10 +307,14 @@ class LinkPanel extends JPanel {
         // System.out.println();
     }
 
-    void resize() {
+    void update() {
         Rectangle source = tail.getBounds();
         Rectangle distance = head.getBounds();
         setShortestDistance(source, distance);
         setSize();
+
+        int fitX = -(mainPanel.getWidth() / 2);
+        int fitY = -(mainPanel.getHeight() / 4);
+        mainPanel.setLocation((getRight() - getLeft()) / 2 + fitX, (getBtm() - getTop()) / 2 + fitY);
     }
 }
