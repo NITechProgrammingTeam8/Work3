@@ -1,33 +1,54 @@
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
 
 public class SemNetGUI extends JFrame {
     public static void main(String args[]) {
-        SemNetGUI frame = new SemNetGUI("セマンティックネット");
+        if(args.length < 1) {
+            System.out.println("USAGE: java SemNetGUI [name]");
+            System.exit(1);
+        }
+        SemNetGUI frame = new SemNetGUI("セマンティックネット", args[0]);
         frame.setVisible(true);
     }
 
-    SemNetGUI(String title) {
+    SemNetGUI(String title, String name) {
 
-        setTitle(title);
+        setTitle(title + " (" + name + ")");
         int appWidth = 1500;
         int appHeight = 700;
         setBounds(100, 100, appWidth, appHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel menuPanel = new JPanel();
-        JButton btn = new JButton("Push!!");
-
-        menuPanel.add(btn);
-
-        JPanel mainPanel = new RelationMap();
+        JPanel mainPanel = new RelationMap("members/" + name + ".txt");
+        JPanel menuPanel = new MenuPanel();
 
         Container contentPane = getContentPane();
-        contentPane.add(menuPanel, BorderLayout.WEST);
         contentPane.add(mainPanel, BorderLayout.CENTER);
+        contentPane.add(menuPanel, BorderLayout.NORTH);
+    }
+
+    class MenuPanel extends JPanel {
+        String selected;
+
+        MenuPanel() {
+
+            JTextField text = new JTextField(30);
+            JButton[] btns = new JButton[3];
+            btns[0] = new JButton("検索");
+            btns[1] = new JButton("追加");
+            btns[2] = new JButton("削除");
+
+            add(text);
+            for(JButton b : btns) {
+                add(b);
+            }
+        }
     }
 }
 
@@ -38,10 +59,10 @@ class RelationMap extends JPanel {
     private Map<Link, LinkPanel> links; // LinkからLinkPanelも同様
     private NodePanel dragPanel;
 
-    RelationMap() {
+    RelationMap(String filename) {
         sn = new SemanticNet();
         ad = new AccessData(sn);
-        ad.start("members/yuasa.txt");
+        ad.start(filename);
 
         setLayout(null);
         nodes = new HashMap<>();
