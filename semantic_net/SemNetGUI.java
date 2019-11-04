@@ -67,13 +67,13 @@ public class SemNetGUI extends JFrame {
                 status.setText(cmd + "の" + param + ": " + arg + " => " + result);
             } else {
                 if (cmd.equals("追加")) {
-                    if (rMap.addNode(arg)) {
+                    if (rMap.addLink(arg)) {
                         param = "成功";
                     } else {
                         param = "失敗";
                     }
                 } else if (cmd.equals("削除")) {
-                    if (rMap.removeNode(arg)) {
+                    if (rMap.removeLink(arg)) {
                         param = "成功";
                     } else {
                         param = "失敗";
@@ -116,8 +116,6 @@ class RelationMap extends JPanel {
             NodePanel tail = nodes.get(l.getTail());
             NodePanel head = nodes.get(l.getHead());
             LinkPanel lp = new LinkPanel(l, tail, head);
-            tail.addDepartFromMeLinks(lp);
-            head.addArriveAtMeLinks(lp);
 
             add(lp);
             links.put(l, lp);
@@ -128,24 +126,48 @@ class RelationMap extends JPanel {
         return ad.searchNaturalData(text);
     }
 
-    boolean addNode(String text) {
-        // if (ad.addData(text)) {
-        // NodePanel tail = nodes.get(l.getTail());
-        // NodePanel head = nodes.get(l.getHead());
-        // LinkPanel lp = new LinkPanel(l, tail, head);
-        // tail.addDepartFromMeLinks(lp);
-        // head.addArriveAtMeLinks(lp);
+    boolean addLink(String text) {
+        Link link = ad.addData(text);
+        if(link == null) {
+            return false;
+        }
+        Node tail = link.getTail();
+        NodePanel tailPanel = nodes.get(tail);
+        if(!nodes.containsKey(tail)) {
+            tailPanel = new NodePanel(tail);
+            tailPanel.setBounds(20, 20, 180, 30);
+            add(tailPanel);
+            nodes.put(tail, tailPanel);
+        }
 
-        // add(lp);
-        // links.put(l, lp);
+        Node head = link.getHead();
+        NodePanel headPanel = nodes.get(head);
+        if(!nodes.containsKey(head)) {
+            headPanel = new NodePanel(head);
+            headPanel.setBounds(20, 20, 180, 30);
+            add(headPanel);
+            nodes.put(head, headPanel);
+        }
 
-        // return true;
-        // }
-        return false;
+        LinkPanel lp = new LinkPanel(link, tailPanel, headPanel);
+
+        add(lp);
+        links.put(link, lp);
+        repaint();
+        return true;
     }
 
-    boolean removeNode(String text) {
-        return ad.deleteData2(text);
+    boolean removeLink(String text) {
+        Link link = ad.deleteData2(text);
+        if(link == null) {
+            return false;
+        }
+        LinkPanel lp = links.get(link);
+
+        remove(lp);
+        links.remove(link);
+        repaint();
+        return true;
     }
 }
 
@@ -254,6 +276,9 @@ class LinkPanel extends JPanel {
         mainPanel.setBounds((getRight() - getLeft()) / 2 + fitX, (getBtm() - getTop()) / 2 + fitY, mainWidth,
                 mainHeight);
         add(mainPanel);
+
+        tail.addDepartFromMeLinks(this);
+        head.addArriveAtMeLinks(this);
     }
 
     void setShortestDistance(Rectangle source, Rectangle distance) {
