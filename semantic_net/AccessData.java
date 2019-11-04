@@ -41,7 +41,6 @@ class AccessData {
         //String filename = "ex.txt";
         List<String> statementList = readTextFile(filename);
         for(String statement: statementList) {
-        	//withoutInheritance.add(statement);  // 継承を含まないと仮定
         	List<String> splitList = splitStatement(statement);
             addLink(sn, splitList);
         }
@@ -51,11 +50,11 @@ class AccessData {
     // 重複を許さない(重複は追加不可)
     // "Noriko = is-a => student"
     // Taro is-a NIT-student
-    public boolean addData(String newData) {
+    public Link addData(String newData) {
     	addallData();
     	boolean same = alladdData.contains(newData);
     	if (same == true) {
-    		return false;
+    		return null;
     	} else {
     		List<String> splitLists = splitStatement(newData);
     		List<String> splitList = new ArrayList<String>();
@@ -65,31 +64,25 @@ class AccessData {
     			}
     		}
     		addLink(sn, splitList);
-    		return true;
+    		return sn.getLink(splitList.get(1),splitList.get(0),splitList.get(2));
     	}
     }
-	*/
-	// ノードの関係性を削除するように指示する(削除出来たらtrue、出来なければfalse)
-    // "Noriko = is-a => student"
-    public boolean deleteData2(String deleteData) {
-		/*
-		// (ここを追加)
+    public Link deleteData2(String deleteData) {
     	boolean same = alladdData.contains(deleteData);
+    	Link returndelete = null;
     	if (same == true) {
     		alladdData.remove(alladdData.indexOf(deleteData));
+    		List<String> splitLists = splitStatement(deleteData);
+    		List<String> splitList = new ArrayList<String>();
+    		for (String sl : splitLists) {
+    			if (!(sl.equals("=") || sl.equals("=>"))) {
+    				splitList.add(sl);
+    			}
+    		}
+    		returndelete = sn.getLink(splitList.get(1),splitList.get(0),splitList.get(2));
+    		sn.changeLink(splitList.get(1),splitList.get(0),splitList.get(2));
     	}
-		// (ここまで)
-		*/
-    	List<String> splitLists = splitStatement(deleteData);
-		//System.out.println(splitLists);
-		List<String> splitList = new ArrayList<String>();
-		for (String sl : splitLists) {
-			if (!(sl.equals("=") || sl.equals("=>"))) {
-				splitList.add(sl);
-			}
-		}
-		//System.out.println(splitList);
-		return sn.changeLink(splitList.get(1),splitList.get(0),splitList.get(2));
+    	return returndelete;
     }
     public ArrayList<Link> getLinks() {
     	return sn.getLinks();
@@ -107,9 +100,8 @@ class AccessData {
     			alladdData.add(existData);
     		}
     	}
-    	//System.out.println(alladdData);
     }
-
+	
     // ファイルの読み込み
     private static List<String> readTextFile(String fileName) {
         List<String> stateList = new ArrayList<>();
@@ -157,7 +149,7 @@ class AccessData {
         }
     	return sn.getQuery(query);
     }
-	// 自然言語での検索
+
     public ArrayList searchNaturalData(String targetData) {
     	List<String> querysplitList = splitStatementComma(targetData);
     	ArrayList<ArrayList<String>> queryList = new ArrayList<ArrayList<String>>();

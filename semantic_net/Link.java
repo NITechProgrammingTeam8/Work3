@@ -58,12 +58,20 @@ public class Link {
     	if (getTail().getName().equals(theTail) && getHead().getName().equals(theHead)) {
     		//System.out.println(tail.getName() + " = " + label +" => " + head.getName());
         	//System.out.println(getTail() + " = " + getLabel() +" => " + getHead());
-    		label = null;
+    		label = "null";
     		flag = 1;
     		//System.out.println(tail.getName() + " = " + label +" => " + head.getName());
         	//System.out.println(getTail() + " = " + getLabel() +" => " + getHead());
     	}
     	return flag;
+    }
+
+    public boolean sameLink(String theLabel, String theTail, String theHead) {
+    	if (getLabel().equals(theLabel) && getTail().getName().equals(theTail) && getHead().getName().equals(theHead)) {
+    		return true;
+    	} else {
+    		return false;
+    	}
     }
 
     public String getFullName(){

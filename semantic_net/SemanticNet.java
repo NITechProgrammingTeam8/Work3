@@ -253,7 +253,19 @@ public class SemanticNet {
     	}
     }
 
+    public Link getLink(String theLabel, String theTail, String theHead) {
+    	Link returnLink = null;
+    	for(int i = 0 ; i < links.size() ; i++){
+    		boolean pre = ((Link)links.get(i)).sameLink(theLabel, theTail, theHead);
+    		if (pre == true) {
+    			returnLink = ((Link)links.get(i));
+    		}
+    	}
+    	return returnLink;
+    }
+
 }
+
 
 class Matcher {
     StringTokenizer st1;
