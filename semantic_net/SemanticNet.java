@@ -5,6 +5,7 @@ import java.util.StringTokenizer;
 
 /***
  * 意味ネットワーク (Semantic Net)
+ *
  */
 public class SemanticNet {
     ArrayList<Link> links;
@@ -12,36 +13,17 @@ public class SemanticNet {
     HashMap<String,Node> nodesNameTable;
 
     SemanticNet(){
-<<<<<<< HEAD
     	links = new ArrayList<Link>();
     	nodes = new ArrayList<Node>();
     	nodesNameTable = new HashMap<String,Node>();
-=======
-		links = new ArrayList<Link>();
-		nodes = new ArrayList<Node>();
-		nodesNameTable = new HashMap<String,Node>();
->>>>>>> 英語での質問応答
     }
 
     /***
      * 質問(query)の集合を受け取る
      */
     public void query(ArrayList<Link> theQueries){
-<<<<<<< HEAD
     	System.out.println("*** Query ***");
     	for(int i = 0 ; i < theQueries.size() ; i++){
-    		System.out.println(((Link)theQueries.get(i)).toString());
-    	}
-    	// 解が無いとき[]
-    	// 解があるとき[{?変数 = 解,・・・}]
-    	System.out.println((doQuery(theQueries)).toString());
-    }
-
-    public ArrayList getQuery(ArrayList<Link> theQueries) {
-    	return doQuery(theQueries);
-=======
-		System.out.println("*** Query ***");
-		for(int i = 0 ; i < theQueries.size() ; i++){
 		    System.out.println(((Link)theQueries.get(i)).toString());	//質問を表示
 		}
 		//System.out.println((doQuery(theQueries)).toString());
@@ -57,27 +39,28 @@ public class SemanticNet {
 			}
 			System.out.println("です.");
 		}
->>>>>>> 英語での質問応答
+    }
+
+    public ArrayList getQuery(ArrayList<Link> theQueries) {
+    	return doQuery(theQueries);
     }
 
     /***
      * 1つずつの質問(query)を処理
      */
     public ArrayList doQuery(ArrayList theQueries){
-    	ArrayList bindingsList = new ArrayList();
-		for(int i = 0 ; i < theQueries.size() ; i++){	//質問(query)をリンクに分解
-		    Link theQuery = (Link)theQueries.get(i);	//リンクはLabel,Head,Tailにより構成される
-
-		    //リンクから得られた複数の変数束縛=「変数束縛集合」
-		    ArrayList bindings = queryLink(theQuery);
-		    if(bindings.size() != 0){
-		    	bindingsList.add(bindings);
-		    } else {
-		    	//失敗したとき
-		    	return (new ArrayList());
-		    }
-		}
-		return join(bindingsList);
+	ArrayList bindingsList = new ArrayList();
+	for(int i = 0 ; i < theQueries.size() ; i++){
+	    Link theQuery = (Link)theQueries.get(i);
+	    ArrayList bindings = queryLink(theQuery);
+	    if(bindings.size() != 0){
+		bindingsList.add(bindings);
+	    } else {
+		//失敗したとき
+		return (new ArrayList());
+	    }
+	}
+	return join(bindingsList);
     }
 
     /***
@@ -89,13 +72,8 @@ public class SemanticNet {
 	for(int i = 0 ; i < links.size() ; i++){
 	    Link theLink = (Link)links.get(i);
 	    HashMap<String,String> binding = new HashMap<String,String>();
-<<<<<<< HEAD
 	    String theQueryString = theQuery.getFullName();
 	    String theLinkString  = theLink.getFullName();
-=======
-	    String theQueryString = theQuery.getFullName();		//与えられたリンク
-	    String theLinkString  = theLink.getFullName();		//セマンティックに登録されたリンク
->>>>>>> 英語での質問応答
 	    if((new Matcher()).matching(theQueryString,theLinkString,binding)){
 	    	bindings.add(binding);
 	    }
@@ -108,32 +86,31 @@ public class SemanticNet {
      * 再帰的に結合する.
      */
     public ArrayList join(ArrayList theBindingsList){
-		int size = theBindingsList.size();
-		switch(size){
-		    case 0:
-			// 失敗している時？
-		    	break;
-		    case 1:
-		    	return (ArrayList)theBindingsList.get(0);	//そのまま返す
-		    case 2:
-				ArrayList bindings1 = (ArrayList)theBindingsList.get(0);
-				ArrayList bindings2 = (ArrayList)theBindingsList.get(1);
-				return joinBindings(bindings1,bindings2);	//2つの変数束縛集合を結合
-		    default:
-				bindings1 = (ArrayList)theBindingsList.get(0);
-				theBindingsList.remove(bindings1);
-				bindings2 = join(theBindingsList);
-				return joinBindings(bindings1,bindings2);
-		}
-		// ダミー
-		return (ArrayList)null;
+	int size = theBindingsList.size();
+	switch(size){
+	    case 0:
+		// 失敗している時？
+		break;
+	    case 1:
+		return (ArrayList)theBindingsList.get(0);
+	    case 2:
+		ArrayList bindings1 = (ArrayList)theBindingsList.get(0);
+		ArrayList bindings2 = (ArrayList)theBindingsList.get(1);
+		return joinBindings(bindings1,bindings2);
+	    default:
+		bindings1 = (ArrayList)theBindingsList.get(0);
+		theBindingsList.remove(bindings1);
+		bindings2 = join(theBindingsList);
+		return joinBindings(bindings1,bindings2);
+	}
+	// ダミー
+	return (ArrayList)null;
     }
 
     /***
      * 2つの変数束縛集合を結合させ, 1つの変数束縛集合を作る
      */
     public ArrayList joinBindings(ArrayList theBindings1,ArrayList theBindings2){
-<<<<<<< HEAD
     	ArrayList resultBindings = new ArrayList();
     	for(int i = 0 ; i < theBindings1.size() ; i++){
     		HashMap<String,String> theBinding1 = (HashMap)theBindings1.get(i);
@@ -146,20 +123,6 @@ public class SemanticNet {
     		}
     	}
     return resultBindings;
-=======
-		ArrayList resultBindings = new ArrayList();
-		for(int i = 0 ; i < theBindings1.size() ; i++){
-		    HashMap<String,String> theBinding1 = (HashMap)theBindings1.get(i);
-		    for(int j = 0 ; j < theBindings2.size() ; j++){
-		    	HashMap<String,String> theBinding2 = (HashMap)theBindings2.get(j);
-		    	HashMap<String,String> resultBinding = joinBinding(theBinding1,theBinding2);
-		    	if(resultBinding.size()!=0){
-		    		resultBindings.add(resultBinding);
-		    	}
-		    }
-		}
-	return resultBindings;
->>>>>>> 英語での質問応答
     }
 
     /***
@@ -167,30 +130,29 @@ public class SemanticNet {
      * HashMap:Key=変数名, Value=変数に束縛された文字列
      */
     public HashMap<String,String> joinBinding(HashMap<String,String> theBinding1, HashMap<String,String> theBinding2){
-		HashMap<String,String> resultBinding = new HashMap<String,String>();
-		//System.out.println(theBinding1.toString() + "<->" + theBinding2.toString());
-
-		// theBinding1 の key & value をすべてコピー
-		for(Iterator<String> e = theBinding1.keySet().iterator() ; e.hasNext();){
-		    String key = (String)e.next();
-		    String value = (String)theBinding1.get(key);
-		    resultBinding.put(key,value);
+	HashMap<String,String> resultBinding = new HashMap<String,String>();
+	//System.out.println(theBinding1.toString() + "<->" + theBinding2.toString());
+	// theBinding1 の key & value をすべてコピー
+	for(Iterator<String> e = theBinding1.keySet().iterator() ; e.hasNext();){
+	    String key = (String)e.next();
+	    String value = (String)theBinding1.get(key);
+	    resultBinding.put(key,value);
+	}
+	// theBinding2 の key & value を入れて行く，競合があったら失敗
+	for(Iterator<String> e = theBinding2.keySet().iterator() ; e.hasNext();){
+	    String key = (String)e.next();
+	    String value2 = (String)theBinding2.get(key);
+	    if(resultBinding.containsKey(key)){
+		String value1 = (String)resultBinding.get(key);
+		//System.out.println("=>"+value1 + "<->" + value2);
+		if(!value2.equals(value1)){
+		    resultBinding.clear();
+		    break;
 		}
-		// theBinding2 の key & value を入れて行く，競合があったら失敗
-		for(Iterator<String> e = theBinding2.keySet().iterator() ; e.hasNext();){
-		    String key = (String)e.next();
-		    String value2 = (String)theBinding2.get(key);
-		    if(resultBinding.containsKey(key)){
-				String value1 = (String)resultBinding.get(key);
-				//System.out.println("=>"+value1 + "<->" + value2);
-				if(!value2.equals(value1)){		//競合(:Keyが同じなのにValueが等しくない)なら,
-				    resultBinding.clear();
-				    break;
-				}
-		    }
-		    resultBinding.put(key,value2);
-		}
-		return resultBinding;
+	    }
+	    resultBinding.put(key,value2);
+	}
+	return resultBinding;
     }
 
     /***
@@ -200,7 +162,6 @@ public class SemanticNet {
      *     label: is-a.
      */
     public void addLink(Link theLink){
-<<<<<<< HEAD
 	Node tail = theLink.getTail();
 	Node head = theLink.getHead();
 	links.add(theLink);
@@ -217,31 +178,9 @@ public class SemanticNet {
 	tmp.add(theLink);
 	recursiveInheritance(tmp,tail.getISATails());
 
-
 	// 関係を head と tail に登録．
 	head.addArriveAtMeLinks(theLink);
 	tail.addDepartFromMeLinks(theLink);
-=======
-		Node tail = theLink.getTail();	//theLinkのtailノード
-		Node head = theLink.getHead();  //theLinkのheadノードを取得し,
-		links.add(theLink);		//新たなリンクとして登録
-
-		// 性質の継承
-	 	if("is-a".equals(theLink.getLabel())){	//このリンクが"is-a"関係なら,
-	 	    // head のすべてのリンクを is-a をたどってすべてのノードに継承．
-	 	    ArrayList<Node> tmp = new ArrayList<Node>();
-	 	    tmp.add(tail);
-	 	    recursiveInheritance(head.getDepartFromMeLinks(),tmp);	//tailノードにheadノードの属性を継承する
-	 	}
-		// theLink を is-a をたどってすべてのノードに継承させる
-		ArrayList<Link> tmp = new ArrayList<Link>();
-		tmp.add(theLink);
-		recursiveInheritance(tmp,tail.getISATails());
-
-		// 関係を head と tail に登録．
-		head.addArriveAtMeLinks(theLink);
-		tail.addDepartFromMeLinks(theLink);
->>>>>>> 英語での質問応答
     }
 
     /***
@@ -250,28 +189,27 @@ public class SemanticNet {
      */
     public void recursiveInheritance(ArrayList<Link> theInheritLinks,
 				     ArrayList<Node> theInheritNodes){
-		for(int i = 0 ; i < theInheritNodes.size() ; i++){
-		    Node theNode = (Node)theInheritNodes.get(i);
-		    // theNode 自体にリンクを継承．
-		    for(int j = 0 ; j < theInheritLinks.size() ; j++){
-			// theNode を tail にしたリンクを生成
-			Link theLink = (Link)theInheritLinks.get(j);
-			Link newLink = new Link(theLink.getLabel(),
-						theNode.getName(),
-						(theLink.getHead()).getName(),
-						 this);
-			newLink.setInheritance(true);
-			links.add(newLink);
-			theNode.addDepartFromMeLinks(newLink);
-		    }
-		    // theNode から is-a でたどれるノードにリンクを継承
-		    ArrayList<Node> isaTails = theNode.getISATails();
-		    if(isaTails.size() != 0){
-		    	recursiveInheritance(theInheritLinks,isaTails);
-		    }
-		}
+	for(int i = 0 ; i < theInheritNodes.size() ; i++){
+	    Node theNode = (Node)theInheritNodes.get(i);
+	    // theNode 自体にリンクを継承．
+	    for(int j = 0 ; j < theInheritLinks.size() ; j++){
+		// theNode を tail にしたリンクを生成
+		Link theLink = (Link)theInheritLinks.get(j);
+		Link newLink = new Link(theLink.getLabel(),
+					theNode.getName(),
+					(theLink.getHead()).getName(),
+					 this);
+		newLink.setInheritance(true);
+		links.add(newLink);
+		theNode.addDepartFromMeLinks(newLink);
+	    }
+	    // theNode から is-a でたどれるノードにリンクを継承
+	    ArrayList<Node> isaTails = theNode.getISATails();
+	    if(isaTails.size() != 0){
+		recursiveInheritance(theInheritLinks,isaTails);
+	    }
+	}
     }
-
 
     public ArrayList<Node> getNodes(){
     	return nodes;
@@ -289,18 +227,33 @@ public class SemanticNet {
     }
 
     public ArrayList<Link> getLinks() {
+    	//ArrayList<Link> link = new ArrayList<Link>(new LinkedHashSet<>(links));
+    	//ArrayList<Link> link = new ArrayList<Link>(links);
+    	//links = new ArrayList<Link>();
     	return links;
     }
 
     public void printNodes(){
-		System.out.println("*** Nodes ***");
-		for(int i = 0 ; i < nodes.size() ; i++){
-		    System.out.println(((Node)nodes.get(i)).toString());
-		}
+	System.out.println("*** Nodes ***");
+	for(int i = 0 ; i < nodes.size() ; i++){
+	    System.out.println(((Node)nodes.get(i)).toString());
+	}
+    }
+
+    public boolean changeLink(String theLabel, String theTail, String theHead) {
+    	int flag = 0;
+    	for(int i = 0 ; i < links.size() ; i++){
+    		flag += ((Link)links.get(i)).changeLabel(theLabel, theTail, theHead);
+    	}
+    	//System.out.println(flag);
+    	if (flag > 0) {
+    		return true;
+    	} else {
+    		return false;
+    	}
     }
 
 }
-
 
 class Matcher {
     StringTokenizer st1;
