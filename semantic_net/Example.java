@@ -52,8 +52,8 @@ public class Example {
 	Scanner stdIn2 = new Scanner(System.in);	//数値読み込み
 	ArrayList<ArrayList<String>> queryList = new ArrayList<ArrayList<String>>(); //質問(query)を入れる
 	StringTokenizer st;		//トークンごとに分解
-	int retry;
-	do {
+//	int retry;
+//	do {
 		ArrayList<String> tokenList = new ArrayList<>();
 		System.out.println("質問を入力してください");
 		String s = stdIn1.nextLine(); 	//質問文がここに入り,
@@ -90,15 +90,33 @@ public class Example {
 		}
 
 		else if(firstToken.equals("Is")) {
-			tokenList.add(secondToken);
-			tokenList.add(firstToken.replace("Is", "is-a"));
+			if(secondToken.contains("'s")) {
+				tokenList.add(secondToken.replace("'s", ""));
+				tokenList.add(st.nextToken());
+			}
+			else {
+				tokenList.add(secondToken);
+				tokenList.add(firstToken.replace("Is", "is-a"));
+			}
 			st.nextToken();
 			tokenList.add(st.nextToken());
 		}
 
 		else if(firstToken.equals("Does")) {
-			tokenList.add(secondToken);
-			tokenList.add(st.nextToken());
+			if(secondToken.equals("the") || secondToken.equals("a")) {
+				tokenList.add(st.nextToken());
+			}
+			else {
+				tokenList.add(secondToken);
+			}
+
+			String thirdToken = st.nextToken();
+			if(thirdToken.equals("have")) {
+				tokenList.add("has-a");
+			}
+			else {
+				tokenList.add(thirdToken);
+			}
 
 			String forthToken = st.nextToken();
 			if(forthToken.equals("a")) {
@@ -108,9 +126,9 @@ public class Example {
 		}
 
 		queryList.add(tokenList);
-		System.out.println("もう１つ? 1...Yes/ 0...No");
-		retry = stdIn2.nextInt();
-	}while(retry == 1);
+//		System.out.println("もう１つ? 1...Yes/ 0...No");
+//		retry = stdIn2.nextInt();
+//	}while(retry == 1);
 
 	ArrayList<Link> query = new ArrayList<Link>();
 	for(int i=0; i<queryList.size(); i++) {
@@ -127,7 +145,7 @@ public class Example {
 	 */
 	sn.query(query);
 
-	System.out.println("もう１回? 1...Yes/ 0...No");
+	System.out.print("もう１回? 1...Yes/ 0...No ");
 	question = stdIn0.nextInt();
     } while(question == 1);
 		System.out.println("これで終了します");
