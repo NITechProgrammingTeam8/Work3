@@ -29,9 +29,6 @@ public class FrameGUI extends JFrame {
 class FrameMap extends JPanel {
     private AIFrameSystem fs;
     private AccessData ad;
-    // private Map<Node, NodePanel> nodes; // NodeからNodePanelへのポインタは無いためこれで代用
-    // private Map<Link, LinkPanel> links; // LinkからLinkPanelも同様
-    // private NodePanel dragPanel;
 
     FrameMap() {
         fs = new AIFrameSystem();
@@ -77,11 +74,10 @@ class FrameMap extends JPanel {
 
             add(lp);
         }
-
     }
 }
 
-class FramePanel extends JPanel {
+abstract class FramePanel extends JPanel {
     private static int counter = 0;
     private int id;
     private String name;

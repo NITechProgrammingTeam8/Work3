@@ -10,6 +10,7 @@ import java.util.List;
 public class SemNetGUI extends JFrame {
     JLabel status;
     RelationMap rMap;
+
     public static void main(String args[]) {
         if (args.length < 1) {
             System.out.println("USAGE: java SemNetGUI [name]");
@@ -60,15 +61,25 @@ public class SemNetGUI extends JFrame {
             String cmd = e.getActionCommand();
             String arg = text.getText();
 
+            String param = "実行";
             if (cmd.equals("検索")) {
-                rMap.searchNode(arg);
-                status.setText("検索の実行: " + arg);
-            } else if (cmd.equals("追加")) {
-                rMap.addNode(arg);
-                status.setText("追加の実行: " + arg);
-            } else if (cmd.equals("削除")) {
-                rMap.removeNode(arg);
-                status.setText("削除の実行: " + arg);
+                String result = rMap.searchNode(arg).toString();
+                status.setText(cmd + "の" + param + ": " + arg + " => " + result);
+            } else {
+                if (cmd.equals("追加")) {
+                    if (rMap.addNode(arg)) {
+                        param = "成功";
+                    } else {
+                        param = "失敗";
+                    }
+                } else if (cmd.equals("削除")) {
+                    if (rMap.removeNode(arg)) {
+                        param = "成功";
+                    } else {
+                        param = "失敗";
+                    }
+                }
+                status.setText(cmd + "の" + param + ": " + arg);
             }
         }
     }
@@ -79,16 +90,15 @@ class RelationMap extends JPanel {
     private AccessData ad;
     private Map<Node, NodePanel> nodes; // NodeからNodePanelへのポインタは無いためこれで代用
     private Map<Link, LinkPanel> links; // LinkからLinkPanelも同様
-    private NodePanel dragPanel;
 
     RelationMap(String filename) {
         sn = new SemanticNet();
         ad = new AccessData(sn);
-        ad.start(filename);
+        ad.start(filename); // セマンティックネットの構築
 
         setLayout(null);
         nodes = new HashMap<>();
-        ArrayList<Node> nodeList = ad.getNodes();
+        ArrayList<Node> nodeList = ad.getNodes(); // セマンティックネットからノードの取得
         int xloc = 100;
         int yloc = 100;
         for (Node n : nodeList) {
@@ -101,7 +111,7 @@ class RelationMap extends JPanel {
             nodes.put(n, np);
         }
         links = new HashMap<>();
-        ArrayList<Link> linkList = ad.getLinks();
+        ArrayList<Link> linkList = ad.getLinks(); // セマンティックネットからリンクの取得
         for (Link l : linkList) {
             NodePanel tail = nodes.get(l.getTail());
             NodePanel head = nodes.get(l.getHead());
@@ -114,19 +124,28 @@ class RelationMap extends JPanel {
         }
     }
 
-    void searchNode(String text) {
-        ArrayList<Node> result = ad.searchNaturalData(text);
-        for(Node n : result) {
-            // ノードの色または枠を変更する
-        }
+    ArrayList searchNode(String text) {
+        return ad.searchNaturalData(text);
     }
 
-    void addNode(String text) {
+    boolean addNode(String text) {
+        // if (ad.addData(text)) {
+        // NodePanel tail = nodes.get(l.getTail());
+        // NodePanel head = nodes.get(l.getHead());
+        // LinkPanel lp = new LinkPanel(l, tail, head);
+        // tail.addDepartFromMeLinks(lp);
+        // head.addArriveAtMeLinks(lp);
 
+        // add(lp);
+        // links.put(l, lp);
+
+        // return true;
+        // }
+        return false;
     }
 
-    void removeNode(String text) {
-
+    boolean removeNode(String text) {
+        return ad.deleteData2(text);
     }
 }
 
@@ -137,12 +156,14 @@ class NodePanel extends JPanel {
     private ArrayList<LinkPanel> departFromMeLinks; // 自分から出ていくリンク
     private ArrayList<LinkPanel> arriveAtMeLinks; // 自分に入ってくるリンク
     private int draggedAtX, draggedAtY;
+    private boolean focus;
 
     NodePanel(Node node) {
         id = counter++;
         this.node = node;
         departFromMeLinks = new ArrayList<>();
         arriveAtMeLinks = new ArrayList<>();
+        focus = false;
 
         setBackground(Color.ORANGE);
         setBorder(new BevelBorder(BevelBorder.RAISED));
