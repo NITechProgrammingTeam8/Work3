@@ -79,16 +79,15 @@ class RelationMap extends JPanel {
     private AccessData ad;
     private Map<Node, NodePanel> nodes; // NodeからNodePanelへのポインタは無いためこれで代用
     private Map<Link, LinkPanel> links; // LinkからLinkPanelも同様
-    private NodePanel dragPanel;
 
     RelationMap(String filename) {
         sn = new SemanticNet();
         ad = new AccessData(sn);
-        ad.start(filename);
+        ad.start(filename);  // セマンティックネットの構築
 
         setLayout(null);
         nodes = new HashMap<>();
-        ArrayList<Node> nodeList = ad.getNodes();
+        ArrayList<Node> nodeList = ad.getNodes();  // セマンティックネットからノードの取得
         int xloc = 100;
         int yloc = 100;
         for (Node n : nodeList) {
@@ -101,7 +100,7 @@ class RelationMap extends JPanel {
             nodes.put(n, np);
         }
         links = new HashMap<>();
-        ArrayList<Link> linkList = ad.getLinks();
+        ArrayList<Link> linkList = ad.getLinks();  // セマンティックネットからリンクの取得
         for (Link l : linkList) {
             NodePanel tail = nodes.get(l.getTail());
             NodePanel head = nodes.get(l.getHead());
