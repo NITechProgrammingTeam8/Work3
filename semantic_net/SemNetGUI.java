@@ -8,8 +8,10 @@ import java.util.*;
 import java.util.List;
 
 public class SemNetGUI extends JFrame {
+    JLabel status;
+    RelationMap rMap;
     public static void main(String args[]) {
-        if(args.length < 1) {
+        if (args.length < 1) {
             System.out.println("USAGE: java SemNetGUI [name]");
             System.exit(1);
         }
@@ -25,28 +27,48 @@ public class SemNetGUI extends JFrame {
         setBounds(100, 100, appWidth, appHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel mainPanel = new RelationMap("members/" + name + ".txt");
+        rMap = new RelationMap("members/" + name + ".txt");
+        JPanel mainPanel = rMap;
         JPanel menuPanel = new MenuPanel();
+        status = new JLabel();
 
         Container contentPane = getContentPane();
         contentPane.add(mainPanel, BorderLayout.CENTER);
         contentPane.add(menuPanel, BorderLayout.NORTH);
+        contentPane.add(status, BorderLayout.SOUTH);
     }
 
-    class MenuPanel extends JPanel {
-        String selected;
+    class MenuPanel extends JPanel implements ActionListener {
+        JTextField text;
 
         MenuPanel() {
-
-            JTextField text = new JTextField(30);
+            text = new JTextField(30);
             JButton[] btns = new JButton[3];
             btns[0] = new JButton("検索");
             btns[1] = new JButton("追加");
             btns[2] = new JButton("削除");
 
             add(text);
-            for(JButton b : btns) {
+            for (JButton b : btns) {
                 add(b);
+                b.addActionListener(this);
+            }
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String cmd = e.getActionCommand();
+            String arg = text.getText();
+
+            if (cmd.equals("検索")) {
+                rMap.searchNode(arg);
+                status.setText("検索の実行: " + arg);
+            } else if (cmd.equals("追加")) {
+                rMap.addNode(arg);
+                status.setText("追加の実行: " + arg);
+            } else if (cmd.equals("削除")) {
+                rMap.removeNode(arg);
+                status.setText("削除の実行: " + arg);
             }
         }
     }
@@ -91,14 +113,29 @@ class RelationMap extends JPanel {
             links.put(l, lp);
         }
     }
+
+    void searchNode(String text) {
+        ArrayList<Node> result = ad.searchNaturalData(text);
+        for(Node n : result) {
+            // ノードの色または枠を変更する
+        }
+    }
+
+    void addNode(String text) {
+
+    }
+
+    void removeNode(String text) {
+
+    }
 }
 
 class NodePanel extends JPanel {
     private static int counter = 0;
     private int id;
     private Node node;
-    ArrayList<LinkPanel> departFromMeLinks; // 自分から出ていくリンク
-    ArrayList<LinkPanel> arriveAtMeLinks; // 自分に入ってくるリンク
+    private ArrayList<LinkPanel> departFromMeLinks; // 自分から出ていくリンク
+    private ArrayList<LinkPanel> arriveAtMeLinks; // 自分に入ってくるリンク
     private int draggedAtX, draggedAtY;
 
     NodePanel(Node node) {
@@ -152,16 +189,8 @@ class NodePanel extends JPanel {
         departFromMeLinks.add(theLink);
     }
 
-    public ArrayList<LinkPanel> getDepartFromMeLinks() {
-        return departFromMeLinks;
-    }
-
     public void addArriveAtMeLinks(LinkPanel theLink) {
         arriveAtMeLinks.add(theLink);
-    }
-
-    public ArrayList<LinkPanel> getArriveAtMeLinks() {
-        return arriveAtMeLinks;
     }
 }
 
@@ -200,7 +229,7 @@ class LinkPanel extends JPanel {
         int mainWidth = 120;
         int mainHeight = 30;
         int fitX = -(mainWidth / 2);
-        int fitY = -(mainHeight / 4);
+        int fitY = -(mainHeight / 2);
         mainPanel.setBounds((getRight() - getLeft()) / 2 + fitX, (getBtm() - getTop()) / 2 + fitY, mainWidth,
                 mainHeight);
         add(mainPanel);
@@ -233,7 +262,7 @@ class LinkPanel extends JPanel {
         }
         midPoints[0].setLocation(r.x + r.width / 2.0, r.y); // 上の中点
         midPoints[1].setLocation(r.x + r.width, r.y + r.height / 2.0); // 右の中点
-        midPoints[2].setLocation(r.x + r.width / 2.0, r.y + r.height / 2.0); // 下の中点
+        midPoints[2].setLocation(r.x + r.width / 2.0, r.y + r.height); // 下の中点
         midPoints[3].setLocation(r.x, r.y + r.height / 2.0); // 左の中点
         return midPoints;
     }
@@ -330,7 +359,7 @@ class LinkPanel extends JPanel {
         setSize();
 
         int fitX = -(mainPanel.getWidth() / 2);
-        int fitY = -(mainPanel.getHeight() / 4);
+        int fitY = -(mainPanel.getHeight() / 2);
         mainPanel.setLocation((getRight() - getLeft()) / 2 + fitX, (getBtm() - getTop()) / 2 + fitY);
     }
 }
