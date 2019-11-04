@@ -14,20 +14,14 @@ public class FrameGUI extends JFrame {
     FrameGUI(String title) {
 
         setTitle(title);
-        int appWidth = 1500;
+        int appWidth = 1200;
         int appHeight = 700;
         setBounds(100, 100, appWidth, appHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel menuPanel = new JPanel();
-        JButton btn = new JButton("Push!!");
-
-        menuPanel.add(btn);
-
         JPanel mainPanel = new FrameMap();
 
         Container contentPane = getContentPane();
-        contentPane.add(menuPanel, BorderLayout.WEST);
         contentPane.add(mainPanel, BorderLayout.CENTER);
     }
 }
@@ -44,54 +38,46 @@ class FrameMap extends JPanel {
         ad = new AccessData(fs);
         ad.start();
 
-
-        // スーパフレーム
+        // クラスフレーム
         String frameName = ad.getFrameName();
         List<String> slotList = ad.getSrotListName();
         List<String> slotValue = ad.getFrame(frameName);
-        FramePanel sfp = new FramePanel(frameName, slotList, slotValue);
-
-        add(sfp);
+        ClassFramePanel cfp = new ClassFramePanel(frameName, slotList, slotValue);
 
         // インスタンスフレーム
-        String name = "Azurlane";
-        ad.makeInstance(name);
-        // FramePanel ifp = new FramePanel(name, sfp);
-        // List<String> defalt = ad.getFrame(name); // デフォルト値
+        String[] nameList = { "Azurlane", "Dragon-Quest", "Hearts-of-Iron-4", "Monster-Hunter", "Pawapuro-Kun" };
+        ArrayList<InstanceFramePanel> ifpList = new ArrayList<>();
 
-        List<String> readData = ad.readTextFile("games/"+name+".txt");
-        ad.addInstanceData(name, readData);  // デフォルト値を変更
-        List<String> instanceValue = ad.getFrame(name);
-        FramePanel ifp = new FramePanel(name, slotList, instanceValue);
+        for (String name : nameList) {
+            ad.makeInstance(name);
+            // List<String> defalt = ad.getFrame(name); // デフォルト値(不要)
 
-        add(ifp);
+            List<String> readData = ad.readTextFile("games/" + name + ".txt");
+            ad.addInstanceData(name, readData); // デフォルト値を変更
+            List<String> instanceValue = ad.getFrame(name);
+            ifpList.add(new InstanceFramePanel(name, cfp, instanceValue));
+        }
 
-        // setLayout(null);
-        // nodes = new HashMap<>();
-        // ArrayList<Node> nodeList = ad.getNodes();
-        // int xloc = 100;
-        // int yloc = 100;
-        // for (Node n : nodeList) {
-        //     NodePanel np = new NodePanel(n);
-        //     np.setBounds(xloc, yloc, 180, 30);
-        //     xloc += 50;
-        //     yloc += 20;
+        setLayout(null);
+        int xloc = 200;
+        int yloc = 100;
 
-        //     add(np);
-        //     nodes.put(n, np);
-        // }
-        // links = new HashMap<>();
-        // ArrayList<Link> linkList = ad.getLinks();
-        // for (Link l : linkList) {
-        //     NodePanel tail = nodes.get(l.getTail());
-        //     NodePanel head = nodes.get(l.getHead());
-        //     LinkPanel lp = new LinkPanel(l, tail, head);
-        //     tail.addDepartFromMeLinks(lp);
-        //     head.addArriveAtMeLinks(lp);
+        cfp.setBounds(xloc, yloc, 100, 100);
+        xloc -= 70;
+        yloc += 200;
+        add(cfp);
+        for (InstanceFramePanel ifp : ifpList) {
+            ifp.setBounds(xloc, yloc, 100, 100);
+            xloc += 200;
+            add(ifp);
 
-        //     add(lp);
-        //     links.put(l, lp);
-        // }
+            LinkPanel lp = new LinkPanel(ifp, cfp);
+            ifp.addDepartFromMeLinks(lp);
+            cfp.addArriveAtMeLinks(lp);
+
+            add(lp);
+        }
+
     }
 }
 
@@ -99,18 +85,34 @@ class FramePanel extends JPanel {
     private static int counter = 0;
     private int id;
     private String name;
-    private Map<String, String> slots;
+    private LinkedHashMap<String, String> slots;
+    private ArrayList<LinkPanel> departFromMeLinks; // 自分から出ていくリンク
+    private ArrayList<LinkPanel> arriveAtMeLinks; // 自分に入ってくるリンク
     private int draggedAtX, draggedAtY;
 
     FramePanel(String name, List<String> list, List<String> values) {
         id = counter++;
         this.name = name;
         slots = new LinkedHashMap<>();
-        for(int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             slots.put(list.get(i), values.get(i));
         }
+        departFromMeLinks = new ArrayList<>();
+        arriveAtMeLinks = new ArrayList<>();
 
         setBackground(Color.ORANGE);
+
+        BevelBorder inborder = new BevelBorder(BevelBorder.LOWERED);
+        String label = id + ": " + name;
+        TitledBorder border = new TitledBorder(inborder, label, TitledBorder.CENTER, TitledBorder.ABOVE_TOP);
+
+        setLayout(new GridLayout(slots.size(), 2));
+        for (Map.Entry<String, String> entry : slots.entrySet()) {
+            add(new JLabel(entry.getKey()));
+            add(new JTextField(entry.getValue()));
+        }
+
+        setBorder(border);
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -125,205 +127,205 @@ class FramePanel extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 setLocation(e.getX() - draggedAtX + getLocation().x, e.getY() - draggedAtY + getLocation().y);
 
-                // for (LinkPanel lp : departFromMeLinks) {
-                //     lp.update();
-                //     lp.repaint();
-                // }
-                // for (LinkPanel lp : arriveAtMeLinks) {
-                //     lp.update();
-                //     lp.repaint();
-                // }
+                for (LinkPanel lp : departFromMeLinks) {
+                    lp.update();
+                    lp.repaint();
+                }
+                for (LinkPanel lp : arriveAtMeLinks) {
+                    lp.update();
+                    lp.repaint();
+                }
             }
         });
-
-        BevelBorder inborder = new BevelBorder(BevelBorder.LOWERED);
-        String label = id + ": " + name;
-        TitledBorder border = new TitledBorder(inborder, label, TitledBorder.CENTER, TitledBorder.ABOVE_TOP);
-
-        setLayout(new GridLayout(slots.size() ,2));
-        for (Map.Entry<String, String> entry : slots.entrySet()) {
-            add(new JLabel(entry.getKey()));
-            add(new JTextField(entry.getValue()));
-        }
-
-        setBorder(border);
     }
 
     int getId() {
         return id;
     }
 
-    Map<String, String> getSlots() {
+    LinkedHashMap<String, String> getSlots() {
         return slots;
+    }
+
+    public void addDepartFromMeLinks(LinkPanel theLink) {
+        departFromMeLinks.add(theLink);
+    }
+
+    public void addArriveAtMeLinks(LinkPanel theLink) {
+        arriveAtMeLinks.add(theLink);
     }
 }
 
-// class LinkPanel extends JPanel {
-//     private Link link;
-//     private NodePanel tail;
-//     private NodePanel head;
-//     private Point start;
-//     private Point end;
-//     private int margin; // パネルの幅の猶予(パネルが端折れないようにするため)
-//     private JPanel mainPanel;
+class ClassFramePanel extends FramePanel {
+    private ArrayList<InstanceFramePanel> list;
 
-//     LinkPanel(Link link, NodePanel tail, NodePanel head) { // tail =label=> head
-//         this.link = link;
-//         this.tail = tail;
-//         this.head = head;
-//         margin = 100;
+    ClassFramePanel(String name, List<String> slotLabels, List<String> values) {
+        super(name, slotLabels, values);
+        list = new ArrayList<>();
+    }
 
-//         // setBackground(Color.BLACK);
-//         setOpaque(false); // パネルの透過
-//         Rectangle source = tail.getBounds();
-//         Rectangle distance = head.getBounds();
-//         setShortestDistance(source, distance);
+    void addInstance(InstanceFramePanel ifp) {
+        list.add(ifp);
+    }
+}
 
-//         setSize();
+class InstanceFramePanel extends FramePanel {
+    private ClassFramePanel par;
 
-//         setLayout(null);
+    InstanceFramePanel(String name, ClassFramePanel cfp, List<String> values) {
+        super(name, new ArrayList(cfp.getSlots().keySet()), values);
+        par = cfp;
+        cfp.addInstance(this);
+    }
+}
 
-//         mainPanel = new JPanel();
-//         mainPanel.setBackground(new Color(0, 128, 128));
-//         mainPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-//         JLabel label = new JLabel(tail.getId() + " = " + link.getLabel() + " => " + head.getId());
+class LinkPanel extends JPanel {
+    private FramePanel child;
+    private FramePanel par;
+    private Point start;
+    private Point end;
+    private int margin; // パネルの幅の猶予(パネルが端折れないようにするため)
+    private JPanel mainPanel;
 
-//         mainPanel.add(label);
+    LinkPanel(FramePanel child, FramePanel par) {
+        this.child = child;
+        this.par = par;
+        margin = 100;
 
-//         int mainWidth = 120;
-//         int mainHeight = 30;
-//         int fitX = -(mainWidth / 2);
-//         int fitY = -(mainHeight / 4);
-//         mainPanel.setBounds((getRight() - getLeft()) / 2 + fitX, (getBtm() - getTop()) / 2 + fitY, mainWidth,
-//                 mainHeight);
-//         add(mainPanel);
-//     }
+        // setBackground(Color.BLACK);
+        setOpaque(false); // パネルの透過
+        Rectangle source = child.getBounds();
+        Rectangle distance = par.getBounds();
+        setPoints(source, distance);
 
-//     void setShortestDistance(Rectangle source, Rectangle distance) {
-//         Point[] fromMidPoints = getMidPoints(source);
-//         Point[] toMidPoints = getMidPoints(distance);
+        setSize();
 
-//         double min = Double.MAX_VALUE;
-//         for (int i = 0; i < 4; i++) {
-//             Point from = fromMidPoints[i].getLocation();
-//             for (int j = 0; j < 4; j++) {
-//                 Point to = toMidPoints[j].getLocation();
-//                 double value = (from.getX() - to.getX()) * (from.getX() - to.getX())
-//                         + (from.getY() - to.getY()) * (from.getY() - to.getY());
-//                 if (value < min) {
-//                     min = value;
-//                     start = from;
-//                     end = to;
-//                 }
-//             }
-//         }
-//     }
+        setLayout(null);
 
-//     Point[] getMidPoints(Rectangle r) {
-//         Point[] midPoints = new Point[4];
-//         for (int i = 0; i < midPoints.length; i++) {
-//             midPoints[i] = new Point();
-//         }
-//         midPoints[0].setLocation(r.x + r.width / 2.0, r.y); // 上の中点
-//         midPoints[1].setLocation(r.x + r.width, r.y + r.height / 2.0); // 右の中点
-//         midPoints[2].setLocation(r.x + r.width / 2.0, r.y + r.height / 2.0); // 下の中点
-//         midPoints[3].setLocation(r.x, r.y + r.height / 2.0); // 左の中点
-//         return midPoints;
-//     }
+        mainPanel = new JPanel();
+        mainPanel.setBackground(new Color(0, 128, 128));
+        mainPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        JLabel label = new JLabel(child.getId() + " => " + par.getId());
 
-//     @Override
-//     public void paintComponent(Graphics g) {
-//         super.paintComponent(g);
-//         paintArrows(g);
-//     }
+        mainPanel.add(label);
 
-//     void paintArrows(Graphics g) {
-//         int fromX = start.x;
-//         int fromY = start.y;
-//         int toX = end.x;
-//         int toY = end.y;
+        int mainWidth = 50;
+        int mainHeight = 30;
+        int fitX = -(mainWidth / 2);
+        int fitY = -(mainHeight / 2);
+        mainPanel.setBounds((getRight() - getLeft()) / 2 + fitX, (getBtm() - getTop()) / 2 + fitY, mainWidth,
+                mainHeight);
+        add(mainPanel);
+    }
 
-//         int constX = getLeft();
-//         int constY = getTop();
+    void setPoints(Rectangle source, Rectangle distance) {
+        start = getMidPoint(source, false).getLocation();
+        end = getMidPoint(distance, true).getLocation();
+    }
 
-//         g.setColor(Color.BLUE);
-//         g.drawLine(fromX - constX, fromY - constY, toX - constX, toY - constY);
-//     }
+    Point getMidPoint(Rectangle r, boolean upside) {
+        Point midPoint = new Point();
+        if (upside) {
+            midPoint.setLocation(r.x + r.width / 2.0, r.y + r.height); // 下の中点
+        } else {
+            midPoint.setLocation(r.x + r.width / 2.0, r.y); // 上の中点
+        }
+        return midPoint;
+    }
 
-//     Point getStart() {
-//         return start;
-//     }
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        paintArrows(g);
+    }
 
-//     Point getEnd() {
-//         return end;
-//     }
+    void paintArrows(Graphics g) {
+        int fromX = start.x;
+        int fromY = start.y;
+        int toX = end.x;
+        int toY = end.y;
 
-//     int getLeft() {
-//         return execHor(true) - margin;
-//     }
+        int constX = getLeft();
+        int constY = getTop();
 
-//     int getRight() {
-//         return execHor(false) + margin;
-//     }
+        g.setColor(Color.BLUE);
+        g.drawLine(fromX - constX, fromY - constY, toX - constX, toY - constY);
+    }
 
-//     int getTop() {
-//         return execVer(true) - margin;
-//     }
+    Point getStart() {
+        return start;
+    }
 
-//     int getBtm() {
-//         return execVer(false) + margin;
-//     }
+    Point getEnd() {
+        return end;
+    }
 
-//     int execHor(boolean b) {
-//         int left = start.x;
-//         int right = end.x;
-//         if (left > right) {
-//             int tmp = left;
-//             left = right;
-//             right = tmp;
-//         }
-//         if (b) {
-//             return left;
-//         } else {
-//             return right;
-//         }
-//     }
+    int getLeft() {
+        return execHor(true) - margin;
+    }
 
-//     int execVer(boolean b) {
-//         int top = start.y;
-//         int btm = end.y;
-//         if (top > btm) {
-//             int tmp = top;
-//             top = btm;
-//             btm = tmp;
-//         }
-//         if (b) {
-//             return top;
-//         } else {
-//             return btm;
-//         }
-//     }
+    int getRight() {
+        return execHor(false) + margin;
+    }
 
-//     void setSize() {
-//         int lpX = getLeft();
-//         int lpY = getTop();
-//         int lpWidth = getRight() - lpX;
-//         int lpHeight = getBtm() - lpY;
-//         setBounds(lpX, lpY, lpWidth, lpHeight);
-//         // System.out.println(lp);
-//         // System.out.println(nodes.get(l.getTail()));
-//         // System.out.println(nodes.get(l.getHead()));
-//         // System.out.println();
-//     }
+    int getTop() {
+        return execVer(true) - margin;
+    }
 
-//     void update() {
-//         Rectangle source = tail.getBounds();
-//         Rectangle distance = head.getBounds();
-//         setShortestDistance(source, distance);
-//         setSize();
+    int getBtm() {
+        return execVer(false) + margin;
+    }
 
-//         int fitX = -(mainPanel.getWidth() / 2);
-//         int fitY = -(mainPanel.getHeight() / 4);
-//         mainPanel.setLocation((getRight() - getLeft()) / 2 + fitX, (getBtm() - getTop()) / 2 + fitY);
-//     }
-// }
+    int execHor(boolean b) {
+        int left = start.x;
+        int right = end.x;
+        if (left > right) {
+            int tmp = left;
+            left = right;
+            right = tmp;
+        }
+        if (b) {
+            return left;
+        } else {
+            return right;
+        }
+    }
+
+    int execVer(boolean b) {
+        int top = start.y;
+        int btm = end.y;
+        if (top > btm) {
+            int tmp = top;
+            top = btm;
+            btm = tmp;
+        }
+        if (b) {
+            return top;
+        } else {
+            return btm;
+        }
+    }
+
+    void setSize() {
+        int lpX = getLeft();
+        int lpY = getTop();
+        int lpWidth = getRight() - lpX;
+        int lpHeight = getBtm() - lpY;
+        setBounds(lpX, lpY, lpWidth, lpHeight);
+        // System.out.println(lp);
+        // System.out.println(nodes.get(l.getTail()));
+        // System.out.println(nodes.get(l.getHead()));
+        // System.out.println();
+    }
+
+    void update() {
+        Rectangle source = child.getBounds();
+        Rectangle distance = par.getBounds();
+        setPoints(source, distance);
+        setSize();
+
+        int fitX = -(mainPanel.getWidth() / 2);
+        int fitY = -(mainPanel.getHeight() / 2);
+        mainPanel.setLocation((getRight() - getLeft()) / 2 + fitX, (getBtm() - getTop()) / 2 + fitY);
+    }
+}
