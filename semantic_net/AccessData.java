@@ -68,18 +68,18 @@ class AccessData {
     		return true;
     	}
     }
-	*/
+
 	// ノードの関係性を削除するように指示する(削除出来たらtrue、出来なければfalse)
     // "Noriko = is-a => student"
     public boolean deleteData2(String deleteData) {
-		/*
+
 		// (ここを追加)
     	boolean same = alladdData.contains(deleteData);
     	if (same == true) {
     		alladdData.remove(alladdData.indexOf(deleteData));
     	}
 		// (ここまで)
-		*/
+
     	List<String> splitLists = splitStatement(deleteData);
 		//System.out.println(splitLists);
 		List<String> splitList = new ArrayList<String>();
