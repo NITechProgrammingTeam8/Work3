@@ -68,6 +68,8 @@
 \item[発展課題3-5] 上記3-3で作成した質問応答システムを，DBpediaあるいはWikidata中の知識を使って質問に答えられるよう，拡張せよ．
 \end{description}
 
+\clearpage
+
 \section{必須課題3-1}
 \begin{screen}
 セマンティックネットのプログラムを参考に，グループメンバー全員（およびその周辺人物）についてのセマンティックネットを構築せよ．
@@ -77,10 +79,12 @@
 私（とその周辺）に関するセマンティックネットの構造は，下図の通りである．
 \begin{figure}[!hbt]
   	\begin{center}
+  	\includegraphics[scale=0.40]{images/aoyama_semantic_net.pdf}
 	\end{center}
   	\caption{セマンティックネット}
 \end{figure}
 
+\clearpage
 
 \section{必須課題3-2}
 \begin{screen}
@@ -162,7 +166,7 @@ RelationMapクラスのコンストラクタにおけるAccessDataを用いた�
 \end{lstlisting}
 
 \subsubsection{ノードを表示するためのパネルを作り，リンクを表示するための描写を設定する．また，パネルをマウスで移動できるようにする}
-ノードのパネルの作成にはJPanelクラスを継承したNodePanelクラスを実装し，利用した．このパネルはマウスでドラッグできるようにする必要があるため，それを実装するためにMouseAdapterクラスのmousePressedメソッドとMouseMotionAdapterクラスのmouseDraggedメソッドをオーバライドすることで，実装した．
+ノードのパネルの作成にはJPanelクラスを継承したNodePanelクラスを実装し，利用した．このパネルはマウスでドラッグできるようにする必要があるため，それを実装するためにMouseAdapterクラスのmousePressedメソッドとMouseMotionAdapterクラスのmouseDraggedメソッドをオーバライドすることで実装した．
 
 また，これらのイベントモデルは全て匿名クラスで実装した．これにより，ソースコードがスッキリし，挙動も分かりやすくすることができた．
 
@@ -201,7 +205,7 @@ NodePanelクラスのコンストラクタにおけるドラック処理を
 
 まず，mousePressedメソッドではe.getX(), e.getY()メソッドによって，マウスがクリックされた時点での座標が取得される．これをNodePanelクラスのフィールドであるint型変数draggedAtX,  draggedAtYに代入し，保持している．
 
-次にmouseDraggedメソッドでは，マウスがクリックされたままドラッグされる度にsetLocationメソッドによって自身のインスタンスの座標を更新している．ここでsetLocationにて行われている計算式について，x軸について特筆して述べる．getLocation().xはNodePanelが配置されるコンポーネントにおける座標であるのに対して，e.getX()とdraggedAtXはNodePanel内における座標である．すなわちsetLocationメソッドが実行される度にe.getX()の座標はdraggedAtXに一致するため，この計算式で正しく動作することが証明できる．
+次にmouseDraggedメソッドでは，マウスがクリックされたままドラッグされる度にsetLocationメソッドによって自身のインスタンスの座標を更新している．ここでsetLocationにて行われている計算式について，x軸について特筆して述べると，getLocation().xはNodePanelが配置されるコンポーネントにおける座標であるのに対して，e.getX()とdraggedAtXはNodePanel内における座標である．すなわちsetLocationメソッドが実行される度にe.getX()の座標はdraggedAtXに一致するため，この計算式で正しく動作することが証明できる．
 
 また，mouseDraggedメソッドでは，updateメソッドとrepaintメソッドの呼び出しが行われている．これにより，ノードに対応するリンクについてもパネルが更新されている． \\
 
@@ -233,7 +237,31 @@ LinkPanelクラス内のこれらのメソッドを
 getLeft, getTop, getRight, getBtmメソッドはパネルの座標を取得するために実装されている．
 
 \subsubsection{検索・追加・削除の機能を追加する}
-内部クラス
+検索・追加・削除の機能を一括して行うためのパネルMenuPanelは，構造的にSemNetGUIクラスの一部と考えられたため，SemNetGUIクラスの内部クラスとして実装した．これにより構造の意図を明確化できた．
+
+検索・追加・削除のボタンが押されたときの処理はRelationMapクラス内のsearchNode, addLink, removeLinkメソッドを介してAccessDataクラス内の検索・追加・削除機能が呼び出されるような構造となっている．これにおいても，メソッドの位置や機能・関係を工夫したことで，クラスの構造化を考慮できた実装とすることができた．
+RelationMapクラスのaddLinkメソッドを
+ソースコード\ref{add}に示す．
+
+\begin{lstlisting}[caption=addLinkメソッド, label=add]
+    boolean addLink(String text) {
+        Link link = ad.addData(text);
+        if(link == null) {
+            return false;
+        }
+        Node tail = link.getTail();
+        NodePanel tailPanel = nodes.get(tail);
+        if(!nodes.containsKey(tail)) {
+            tailPanel = new NodePanel(tail);
+            tailPanel.setBounds(20, 20, 180, 30);
+            add(tailPanel);
+            nodes.put(tail, tailPanel);
+        }
+\end{lstlisting}
+
+AccessDataクラスのインスタンスadを用いて，追加したリンクlinkを受け取っている．linkの中身がnullだったら失敗としてfalseを返している．
+
+新しく追加されたLinkPanelはaddメソッドによって自身のRelationMapインスタンス自身に追加することで，表示面での更新が行われている．
 
 \subsubsection{セマンティックネットのGUIを元にして，フレームのGUIを作る}
 FrameGUI.javaは，基本的にSemNetGUI.javaを元にして作られている．しかしFrameにはNodeと異なり，クラスフレームやインスタンスフレームといった概念が存在する．これを解決するために，FramePanelクラスを抽象クラスとして，クラスフレームのためのパネルにはClassFramePanelクラス，インスタンスフレームのためのパネルにはInstanceFramePanelクラスを実装して利用することで，それぞれの挙動に合わせたパネルを作り分けることができた．
@@ -269,23 +297,82 @@ class InstanceFramePanel extends FramePanel {
 \clearpage
 
 \subsection{実行例}
-UnifyGUIを実行したところ，下図のような画面が得られる．
+実行時の第一引数を”aoyama''として，SemNetGUIを実行したところ，下図のような画面が得られる．
 
 \begin{figure}[!hbt]
   	\begin{center}
+  		\includegraphics[scale=0.25]{images/gui0.png}
 	\end{center}
   	\caption{初期状態}
 \end{figure}
 \clearpage
 
+マウスのドラッグ操作により，ノードの配置を整理したところ，下図のような画面が得られる．
+
+\begin{figure}[!hbt]
+  	\begin{center}
+  		\includegraphics[scale=0.20]{images/gui1.png}
+	\end{center}
+  	\caption{ドラッグ操作}
+\end{figure}
+\clearpage
+
+"What does Shuhei plays ?"を入力し，検索ボタンをクリックしたところ，下図のような画面が得られる．画面最下部にその結果が表示されている．
+
+\begin{figure}[!hbt]
+  	\begin{center}
+  		\includegraphics[scale=0.30]{images/gui2.png}
+	\end{center}
+  	\caption{検索操作}
+\end{figure}
+\clearpage
+
+"Shuhei = is-a => student"を入力し，追加ボタンをクリックしたところ，下図のような画面が得られる．
+
+\begin{figure}[!hbt]
+  	\begin{center}
+  		\includegraphics[scale=0.30]{images/gui3.png}
+	\end{center}
+  	\caption{追加操作}
+\end{figure}
+\clearpage
+
+"Shuhei = has-a => iPad"を入力し，削除ボタンをクリックしたところ，下図のような画面が得られる．
+
+\begin{figure}[!hbt]
+  	\begin{center}
+  		\includegraphics[scale=0.30]{images/gui4.png}
+	\end{center}
+  	\caption{削除操作}
+\end{figure}
+\clearpage
+
+FrameGUIを実行したところ，下図のような画面が得られる．
+
+\begin{figure}[!hbt]
+  	\begin{center}
+  	  	\includegraphics[scale=0.50]{images/gui5.png}
+	\end{center}
+  	\caption{FrameGUIの実行}
+\end{figure}
+\clearpage
+
 
 \subsection{考察}
-これまで3回に渡ってSwingによるGUIの実装をしてきたことによる，さまざまなコンポーネントやレイアウト等を利用しした経験から考えると，図の表示にはレイアウトを無効にするのが最善策であると考えられる．第1回の状態空間の表示ではSpringLayoutを利用したが，そもそも１つ１つのパネルの関係性が独立した図においては，相対的な座標をレイアウトとして保持する必要がなく，今回のようにレイアウト無しで座標指定してパネルを配置したことは，より内部的にも真っ当で冗長さを削減したプログラムにすることができたと考えられる．
+これまでの3回に渡ったSwingでのGUI実装をしてきたことによる，さまざまなコンポーネントやレイアウト等を利用した経験から考えると，図の表示には該当パネル内のレイアウトを無効にするのが最善策であると考えられる．第1回課題の状態空間の表示ではSpringLayoutを利用したが，そもそも１つ１つのパネルの関係性が独立した図においては，相対的な座標をレイアウトとして保持する必要がなく，今回のようにレイアウト無しで座標指定してパネルを配置したことは，より内部的にも真っ当で冗長さを削減したプログラムにすることができたと考えられる．
 
-一方でレイアウトを無しにしたことで，コンポーネントの位置やサイズが自動で調整されるといったことも無くなるため，コンポーネントが表示されないと勘違いして躓いた節もあった．このように，利用するクラス等を変える際は，変更前のクラスと比べてどのような特徴があるかをあらかじめ確認しておき，それを利用してプログラムを作るときも，常に今自分がどの機能を使っており，プログラムはどんな状態にあるかをイメージし続けることが重要だと考えられる．
+一方でレイアウトを無しにしたことで，コンポーネントの位置やサイズが自動で調整されるといったことも無くなるため，コンポーネントが表示されないと勘違いして躓いた節もあった．そのため，利用するクラス等を変える際は，変更前のクラスと比べてどのような特徴があるかをあらかじめ確認しておき，それを利用してプログラムを作るときも，常に今自分がどの機能を使っており，プログラムはどんな状態にあるかをイメージし続けることが重要だと考えられる．\\
 
+Swingをより堅固に使いたいと思い，今回の実装ではクラス分けによる階層化をより一層意識して行った．結果として，パネルの表示が上手くいかなかったときの修正や，あるパネルの挙動を確かめたいとき，パネル内のコンポーネントを一括して管理したいときなどにおいて，RelationMapクラスやNodePanelクラスを作成し，階層化された構造にしておいたおかげで各インスタンスの挙動が把握しやすくなり，これらの実現が用意にできた．一方で，その場限りのクラスを作りたいときには，匿名クラスを用いて実装したり，内部クラスとして実装したりすることで，クラスが増えすぎて逆に複雑になってしまうことを防ぐことができた．
+
+今回の実装で出来たような，クラスを中心とする階層化を意識して，オブジェクト指向の特徴を捉えたJavaプログラミングを今後も心がけてゆきたい．
 
 \section{感想}
+GUI上で図を表示することについては第１回課題で実装した基盤があるため，その分楽にできたが，更に高みを目指すべく，パネルの更新やマウスによるドラッグなど，拡張した機能の実現に積極的に取り組み，実装まですることができてよかった．
+
+しかし，第１回のときと比べて，実際にメインの処理を行う方のプログラム（今回で言うSemanticNet.javaやAIFrameSystem.javaといったGUIとは別の部分）が圧倒的に複雑であり，それを読み解いてGUIに合わせた処理を考える，ということが非常に大変だった．その点，班員に協力を仰いでAccessData.javaのようなデータの仲介のためのプログラムを作ってもらえたのは非常に助かり，また，上手に連携できたため，私の中でグループワークをするスキルが上がったことを感じ，嬉しく思う．
+
+今後も，個人では限界があるものでも，グループメンバーと協力・分担することで，より高みを目指せるようなプログラム作りを意識して取り組んでゆきたい．
 
 
 % 参考文献
