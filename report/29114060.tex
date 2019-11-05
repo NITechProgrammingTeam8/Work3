@@ -60,26 +60,93 @@
   \hline
 \end{tabular}
 \end{center}
-\paragraph{自分の役割} 必須課題3.3
+\paragraph{必須課題として} 課題3.1
+\\　「セマンティックネットを構築」
+\paragraph{必須課題として} 課題3.2
+\\　「知識をフレームで表現を構築」
+\paragraph{自分のメインな役割} 課題3.3
 \\　「知識システムの質問応答システム」
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{課題の説明}
+\section{課題説明}
+\subsection{課題3-1}
+\begin{screen}
+セマンティックネットのプログラムを参考に，自分についてのセマンティックネットを構築せよ.
+\end{screen}
+\subsection{課題3-2}
+\begin{screen}
+フレームのプログラムを参考に，自分の興味分野に関する知識をフレームで表現せよ．その分野の知識を表す上で必須となるスロットが何かを考え，クラスフレームを設計すること．
+\end{screen}
+\subsection{課題3-3}
 \begin{screen}
 課題3-1または3-2で作った知識表現を用いた質問応答システムを作成せよ．
 なお，ユーザの質問は英語や日本語のような自然言語が望ましいが，難しければ課題2で扱ったような変数を含むパターン (クエリー) でも構わない．
 \end{screen}
-
+\\\\\\\\\\\\\\\\
 \section{手法}
+\subsection{課題3-1}
+セマンティックネットを構築するためのデータとして以下のようなデータをsemantic\_net/members/下に用意した.
+\begin{lstlisting}[caption=semantic\_net/members/goto.txt, label=mid]
+Saxphone is-a Instrument
+Gotaku is-a NIT-student
+Gotaku joins NitWindOrchestra
+Gotaku hobby Saxphone
+NyankoGreatWar is-a game
+game has-a story
+Gotaku plays NyankoGreatWar
+NIT-student is-a student
+student do study
+Aladdin is-a animation
+Gotaku watches Aladdin
+Aladdin is-a Disney
+Disney is Fantasy
+\end{lstlisting}
+
+
+上記のセマンティックネットの概念図は以下のようになる.
+
+\begin{figure}[htbp]
+ \begin{center}
+  \includegraphics[width = 11cm, pagebox = cropbox, clip]{goto_semantic_net.pdf}
+ \end{center}
+ \caption[]{セマンティックネットの概念図}\label{fig:fig1.1}
+\end{figure}
+
+クエリによる検索を行うための以下のデータをsemantic\_net/queries/下に用意した.\\
+
+\begin{lstlisting}[caption=semantic\_net/queries/goto.txt, label=mid]
+?y plays NyankoGreatWar
+?y is-a student
+?y watches Aladdin
+\end{lstlisting}
+\subsection{課題3-2}
+フレームを構築するためのデータとして,以下のデータをframe/games/下に用意した.
+\begin{lstlisting}[caption=frame/games/Pawapuro-Kun.txt, label=mid]
+3DS
+9400
+500
+9900
+\end{lstlisting}
+
+上記のインスタンスフレームであるPawapuro-Kunフレームの図を示す.
+\begin{figure}[htbp]
+ \begin{center}
+  \includegraphics[width = 12cm, pagebox = cropbox, clip]{pawaporo_kun_frame.pdf}
+ \end{center}
+ \caption[]{フレームの概念図}\label{fig:fig1.1}
+\end{figure}
+
+\subsection{課題3-3}
+課題3-3の手法として以下の2つを用いた.
 
 \begin{enumerate}
 \item 課題2で扱ったような変数を含むクエリーによる質問
 \item 英文による質問
 \end{enumerate}
 
-\subsection{手法1に関して}
+\subsubsection{手法1に関して}
 変数(?xや?yなど)を含み, [Tail, Label, Head]の形を守って代入する. 具体的には「Taro hobby baseball」という英文ではなく, 単なるクエリーに対して, 「Taro hobby ?x」といったクエリーの形に添った質問をするといった手法である.
 
-\subsection{手法2に関して}
+\subsubsection{手法2に関して}
 ある一定の知識システムが構築された状態において, 質問する内容というのは自ずと限られてくる. 今回は質問とそれに基づく応答を大きく以下の2パターンに分けている. 
 
 \begin{enumerate}
@@ -112,8 +179,16 @@
 そして, だれもが違和感を覚えたのは, 「Taro hobby baseball」という1文. 何となく「太郎の趣味は野球です」になるが, Google翻訳にかけたら, 「ヒロキホビーサッカー」である. そもそもhobbyは動詞になり得ない. 正しくは, 「Taro's hobby is baseball」である. これに質問をするには, 「Is Taro's hobby a baseball ?」に対応する必要がある. そのため, 図2のようなLabelの取り方ではいけない. 質問において, 2つ目のトークンに「's」があるかどうかで処理を変える.
 
 \section{実装}
-\subsection{手法1}
-まずは, 手法1に関する「課題2で扱ったおうな変数を含むクエリーによる質問」の部分を実装したソースコード\ref{src:No1}に示す。
+\subsection{課題3-1}
+semantic\_net/下においてコンパイル後に以下のコマンドを実行することで対象のテキストファイルに含まれるデータのセマンティックネットを構築できる. \\
+java SemanticNetTest [名前] 
+\subsection{課題3-2}
+frame/下においてコンパイル後に以下のコマンドを実行することで対象のテキストファイルに含まれるデータのフレームを構築できる. \\
+java FrameTest [ゲーム名] 
+
+\subsection{課題3-3}
+\subsubsection{手法1}
+まずは, 手法1に関する「課題2で扱ったような変数を含むクエリーによる質問」の部分を実装したソースコード\ref{src:No1}に示す。
 \begin{lstlisting}[caption=クエリーの形に添った質問応答, label=src:No1]
 /***
  * 課題2で扱ったような変数を含むパターン (クエリー)による質問応答システム
@@ -147,9 +222,9 @@ for(int i=0; i<queryList.size(); i++) {
 sn.query(query);
 \end{lstlisting}
 
-上記のプログラムはmain文において, 全てのリンクをSemanticNetクラスのインスタンスに加えて後で行われ, その後, queryメソッドを呼び出している. 質問文はJavaの文字列読み込みのScannerクラスを用いている. それにより入力されたString型のデータを空欄があるたびに分割するStringTokenizerを利用して各トークンに分け, それぞれを適切にTail, Label, Headに分け, queryメソッドを呼び出している.\\
+上記のプログラムはmain文において, 全てのリンクをSemanticNetクラスのインスタンスに加えて後で行われ, その後, queryメソッドを呼び出している. 質問文はJavaの文字列読み込みのScannerクラスを用いている. それにより入力されたString型のデータを空欄があるたびに分割するStringTokenizerを利用して各トークンに分け, それぞれを適切にTail, Label, Headに分け, queryメソッドを呼び出している.
 
-\subsection{手法2}
+\subsubsection{手法2}
 次に, 「英語の質問応答システム」の条件分岐の部分をソースコード\ref{src:No2}に示す.
 \begin{lstlisting}[caption=英語における質問応答, label=src:No2]
 	ArrayList<String> tokenList = new ArrayList<>();
@@ -173,7 +248,6 @@ sn.query(query);
 				tokenList.add(forthToken);
 			tokenList.add("?x");
 		}
-	
 		else if(secondToken.equals("is")) {
 			String thirdToken = st.nextToken().replace("'s", "");
 			tokenList.add(thirdToken);
@@ -195,7 +269,79 @@ sn.query(query);
 ここでポイントになるのは, 質問文には必ず"(空欄) + ?"を入れてもらいたいということだ. というのも, nextTokenメソッドは呼び出し後に次のトークンを参照するので, もし"(空欄) + ?"がなければ, 文を最後まで参照した後に, 参照する次のトークンがなくなってしまい, エラーになってしまうからである.
 
 \section{実行例}
-\subsection{手法1}
+\subsection{課題3-1}
+次に, "java SemanticNetTest goto"の実行例を示す.
+\begin{lstlisting}[caption=java SemanticNetTest gotoの実行例, label=mid]
+~/Programming2/Work3/semantic_net
+●java SemanticNetTest goto                                                                                                                                                                                             【 fix/semantic_net 】
+*** Links ***
+Saxphone  =is-a=>  Instrument
+Gotaku  =is-a=>  NIT-student
+Gotaku =joins=> NitWindOrchestra
+NyankoGreatWar  =is-a=>  game
+game  =has-a=>  story
+( NyankoGreatWar  =has-a=>  story )
+Gotaku  =plays=>  NyankoGreatWar
+NIT-student  =is-a=>  student
+( Gotaku  =is-a=>  student )
+student  =do=>  study
+( NIT-student  =do=> study  )
+( Gotaku  =do=>  study )
+Aladdin  =is-a=>  animation
+Gotaku  =watches=>  Aladdin
+Aladdin  =is-a=>  Disney
+Disney  =is=>  Fantasy
+( Aladdin  =is=>  Fantasy )
+*** Nodes ***
+Saxphone
+Instrument
+Gotaku
+NIT-student
+NitWindOrchestra
+NyankoGreatWar
+game
+story
+student
+Aladdin
+animation
+Disney
+Fantasy
+*** Query ***
+?y  =plays=>  NyankoGreatWar
+?y  =is-a=>  student
+?y  =watches=>  Aladdin
+[{?y=Gotaku}]
+\end{lstlisting}
+
+\subsection{課題3-2}
+次に,"java FrameTest Pawapuro-Kun"の実行例を示す.
+\begin{lstlisting}[caption=java FrameTest Pawapuro-Kunの実行例, label=mid]
+~/Programming2/Work3/frame
+●java FrameTest Pawapuro-Kun                                                                                                                                                                                                  【 fix/frame 】
+クラスフレーム：game
+インスタンスフレーム：Pawapuro-Kun
+device,value,charges,tribute はデフォルト値
+スロット値一覧
+device:device
+value:0
+charges:0
+tribute:0
+tribute はデフォルト値
+スロット値一覧
+device:3DS
+value:9400
+charges:500
+tribute:9900
+再びデフォルト値
+スロット値一覧
+device:device
+value:0
+charges:0
+tribute:9900
+\end{lstlisting}
+
+\subsection{課題3-3}
+\subsubsection{手法1}
 日本語で言うと, [スポーツを趣味にしている人はだれか？]と質問したときの実行結果が以下のようになる.
 \begin{lstlisting}
 Successfully started
@@ -216,7 +362,7 @@ Successfully started
 
 ここで注目したいのは, 1回の実行における複数の質問内容は"かつ"の条件で結ばれているということである. これはソースコード\ref{src:No1}をみるとわかることだが, do-whileでループさせることで, queryメソッドに入れる内容が増え, SemanticNetクラスのqueryLinkメソッドで, 新しいリンクが構築されていくからである.
 
-\subsection{手法2}
+\subsubsection{手法2}
 \begin{lstlisting}
 質問を入力してください
 What is Taro's speciality ?
@@ -242,8 +388,10 @@ Yes!
 また, 手法1とは異なり, "かつの関係"をもって複数の質問をする機能はつけていない. 入力した1つ質問に対して, 1つの答えが出力される. 
 
 \section{考察}
-次の質問とそれの回答を見てほしい.
+課題3-3を扱っていく中で, 気になる点があった. 次にはその点について, 英語で質問をした際の答えの出力結果を示す.
 \begin{lstlisting}
+質問を入力してください
+Does Taro own a car ?
 *** Query ***
 Taro  =own=>  ?x
 {?x=Ferrari}です.
@@ -271,9 +419,12 @@ No...
 
 太郎とFerrariのラベル"own"と Ferrariとcarのラベル"is-a"は異なるため, 太郎はcarを持っていることにはならない. 同様に車はエンジンを持つので, つまり太郎はエンジンをもつということは, 文脈上成り立つが, この知識表現ではラベルの違いから成り立たない. その一方で, "太郎は勉強をしない"という文は成り立つ. これは, "is-a"ラベルがNIT-studentもstudentにも成り立ち, 太郎はstudentまでつながれるからである.
 
+また, 知識ベースに登録する際に, "主語(Tail)に応じて動詞(Label)に三単現のsをつけたりつけなかったり変えてはならない. 統一しなければならない"ということもポイントであった. なぜなら上記でも述べたようにあくまでLabelによって関係性が構築されるので, "所有する"という意味でも, "own"と"owns"はどちらかに統一しなければならない. この点が英語における質問応答の難しいところであった.
 
 \section{感想}
-Javaの使い方は, ググってもいいが, 昔しっかり使い込んだ教科書に立ち戻るのも, また一挙である. 今回はScannerクラスとdo-while文の複数入力プログラムをJava入門の教科書から参照した.
+課題3-3については, 問題に「難しければ課題2で扱ったような変数を含むパターン (クエリー) でも構わない」とあったので, まずは動くプログラムをということで手法1に取り組んだ. 手法1が済んだので, その知識をベースに手法2にも取り組めた. 時間があればmecabを使った日本語の文章での質問応答も取り組みたかったができなかった. このように段階的に課題を進めれるとかなりやりやすかった.
+
+Javaの使い方は, ググってもいいが, 昔しっかり使い込んだ教科書に立ち戻るのも, また一挙である. 今回は課題3-3で文字列読み込みに用いられたScannerクラスとdo-while文の複数入力プログラムをJava入門の教科書から参照した.
 
 英文での質問を処理する際に, 「a」とか「the」とかの前置詞を取るのがめんどくさかった. 私はあまり英語が得意ではないので, Google翻訳先生に頼り, 前置詞を補完, 処理していった. 前置詞は日本人にとってなじみにくい...
 
